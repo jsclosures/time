@@ -1,0 +1,99 @@
+p, h1, form, button{border:0; margin:0; padding:0;}
+.spacer{clear:both; height:1px;}
+
+
+pre {
+ white-space: pre-wrap;       /* css-3 */
+ white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+ white-space: -pre-wrap;      /* Opera 4-6 */
+ white-space: -o-pre-wrap;    /* Opera 7 */
+ word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+
+.none{}
+html, #mainapp {
+    height: 100%;
+    width: 100%;
+}
+body 
+{
+    margin-top: 0.0cm; 
+    margin-right: 0.0cm; 
+    margin-left: 0.0cm; 
+    margin-bottom: 0.0cm; 
+    font-family:"Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif;
+    font-size:12px;
+    scrollbar-face-color: #999;
+    scrollbar-shadow-color: #bbb;
+    scrollbar-highlight-color:#ddd;
+    scrollbar-3dlight-color: #ccc;
+    scrollbar-darkshadow-color: #bbb;
+    scrollbar-track-color: #ddd;
+    scrollbar-arrow-color: #999;
+    height: 100%;
+    padding: 0;
+    overflow:hidden;
+}
+
+.appfooterstatus {
+    padding: 2px;
+}
+.appfootermessage {
+    padding: 2px;
+
+}
+.appfooterversion {
+    padding: 2px;
+}
+
+.loginmessage {
+    color: #000;
+    border-bottom:1px solid #ccc;
+    font-size:14px;
+    font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;
+    font-weight: plain;
+}
+.loginfooter {
+    color: #fff;
+    font-size:14px;
+    font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;
+    font-weight: plain;
+    float: right;
+}
+.loginfooter a {
+    color: #ffffff;
+}
+.small_logo {
+    display: inline;
+    float: right;
+    width:133px;
+    height : 28px;
+    margin-top: 2px;
+    background: url('../images/logo.png') no-repeat 35% 23%;
+    float: right;
+}
+.large_logo
+{
+    margin-top: 0.0cm; 
+    margin-right: 0.0cm; 
+    margin-left: 0.0cm; 
+    margin-bottom: 0.0cm; 
+    padding-right: 10px;
+    border-right: 0px solid #262626;
+    width: 110px;
+    height: 23px;
+    background:url("../images/logo_large.png") top left no-repeat;
+}
+.logo
+{
+	margin-top: 0.0cm; 
+        margin-right: 0.0cm; 
+        margin-left: 0.0cm; 
+        margin-bottom: 0.0cm; 
+	padding: 0px;
+        width: 221px;
+        height: 28px;
+        background:url("../images/logo.png") top left no-repeat;
+        position: relative;
+}
+

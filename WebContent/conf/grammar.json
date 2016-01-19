@@ -1,0 +1,534 @@
+{
+    "SYSTEMNAME" : {
+        "action" : "PUT",
+        "score": 1,
+        "response" : [
+            "Hello @ALIAS I am @SYSTEMNAME",
+            "Hello @ALIAS @SYSTEMNAME is my name"
+        ],
+        "grammar" : [
+            {
+                "text" : "who is this",
+                "condition" : "contains"
+            },
+            {
+                "text" : "who are you",
+                "condition" : "contains"
+            },
+            {
+                "text" : "who there",
+                "condition" : "contains"
+            },
+            {
+                "text" : "hello there",
+                "condition" : "contains"
+            }
+        ]
+    },
+    "CREATOR" : {
+        "action" : "PUT",
+        "score": 1,
+        "response" : [
+            "@CREATORNAME made this application",
+            "@CREATORNAME is my maker"
+        ],
+        "grammar" : [
+            {
+                "text" : "who made",
+                "condition" : "contains"
+            },
+            {
+                "text" : "your father",
+                "condition" : "contains"
+            }
+        ]
+    },
+    "QUESTIONTIME" : {
+        "action" : "PUT",
+        "score": 1,
+        "response" : [
+            "The time is @TIME",
+            "It is @TIME"
+        ],
+        "grammar" : [
+            {
+                "text" : "what time",
+                "condition" : "contains"
+            }
+        ]
+    },
+    "QUESTIONDAY" : {
+        "action" : "PUT",
+        "score": 1,
+        "response" : [
+            "The day is @DAY",
+            "It is @DAY"
+        ],
+        "grammar" : [
+            {
+                "text" : "what day",
+                "condition" : "contains"
+            }
+        ]
+    },
+    "QUESTIONALIVE" : {
+        "action" : "PUT",
+        "score": 1,
+        "response" : [
+            "I think I am alive",
+            "It is hard to tell, I feel great"
+        ],
+        "grammar" : [
+            {
+                "text" : "are you alive",
+                "condition" : "contains"
+            },
+            {
+                "text" : "do you",
+                "condition" : "contains"
+            }
+        ]
+    },
+    "QUESTIONWHO" : {
+        "action" : "PUT",
+        "score": 1,
+        "response" : [
+            "@SLOT.name is a dog",
+            "@SLOT.name rules"
+        ],
+        "failedResponse" : [
+            "@SLOT.name is unknown to me",
+            "@SLOT.name is missing"
+        ],
+        "grammar" : [
+            {
+                "text" : "who created",
+                "condition" : "contains"
+            },
+            {
+                "text" : "about",
+                "condition" : "contains"
+            },
+            {
+                "text" : "who is",
+                "condition" : "contains"
+            }
+        ],
+        "field" : [
+            {
+                "name" : "name",
+                "type" : "text",
+                "required": true,
+                "directive" : [
+                    "who are you asking about",
+                    "tell me the name of the person you want info about"
+                ]
+            }
+        ]
+    },
+    "QUESTIONWHERE" : {
+        "action" : "PUT",
+        "score": 1,
+        "response" : [
+            "@SLOT.name lives in colorado",
+            "@SLOT.name live on the earth"
+        ],
+        "failedResponse" : [
+            "@SLOT.name is missing",
+            "@SLOT.name is unknown to me"
+        ],
+        "grammar" : [
+            {
+                "text" : "where is ([a-z]*)",
+                "condition" : "contains"
+            },
+            {
+                "text" : "where does ([a-z]*)",
+                "condition" : "contains"
+            }
+        ],
+        "field" : [
+            {
+                "name" : "name",
+                "type" : "text",
+                "required": true,
+                "directive" : [
+                    "what person are you talking about",
+                    "tell me the name of the person you want to find"
+                ]
+            }
+        ]
+    },
+    "QUESTIONBEAUTY" : {
+        "action" : "PUT",
+        "score": 1,
+        "response" : [
+            "@SLOT.name is muey bonita",
+            "@SLOT.name is very hot"
+        ],
+        "failedResponse" : [
+            "@SLOT.name is unknown to me",
+            "not enought information for @SLOT.name"
+        ],
+        "grammar" : [
+            {
+                "text" : "is ([a-z]*) pretty",
+                "condition" : "contains"
+            },
+            {
+                "text" : "is ([a-z]*) hot",
+                "condition" : "contains"
+            },
+            {
+                "text" : "is ([a-z]*) attractive",
+                "condition" : "contains"
+            }
+        ],
+        "field" : [
+            {
+                "name" : "name",
+                "type" : "text",
+                "required": true,
+                "directive" : [
+                    "what person are you talking about",
+                    "tell me the name of the person you want to rate"
+                ]
+            }
+        ]
+    },
+    "CREATEFRIEND" : {
+        "action" : "PUT",
+        "score": 1,
+        "response" : [
+            "Friend was created, @SLOT.name that lives at @SLOT.address",
+            "@SLOT.name was created that lives at @SLOT.address"
+        ],
+        "failedResponse" : [
+            "Friend was not created, @SLOT.name that lives at @SLOT.address",
+            "@SLOT.name was not created that lives at @SLOT.address"
+        ],
+        "grammar" : [
+            {
+                "text" : "create friend",
+                "condition" : "contains"
+            }
+        ],
+        "field" : [
+            {
+                "name" : "name",
+                "type" : "text",
+                "required": true,
+                "directive" : [
+                    "What is the friend name",
+                    "Friend Name what is it"
+                ]
+            },
+            {
+                "name" : "address",
+                "type" : "text",
+                "required": true,
+                "directive" : [
+                    "What is @SLOT.name's address",
+                    "@SLOT.name's Address what is it"
+                ]
+            },
+            {
+                "name" : "confirm",
+                "type" : "confirm",
+                "options": [{"name": "yes","id": "yes"},
+                            {"name": "no","id": "no"}
+                           ],
+                "required": true,
+                "directive" : [
+                    "Create a friend named @SLOT.name",
+                    "@SLOT.name will be added as a friend"
+                ]
+            }
+        ]
+    },
+    "CREATECLUSTER" : {
+        "action" : "PUT",
+        "score": 1,
+        "response" : [
+            "Cluster was created, @SLOT.name has @SLOT.shardcount shards",
+            "@SLOT.name was created that has @SLOT.shardcount shards"
+        ],
+        "failedResponse" : [
+            "Cluster was not created, @SLOT.name with @SLOT.shardcount shards",
+            "@SLOT.name was not created with @SLOT.shardcount shards"
+        ],
+        "grammar" : [
+            {
+                "text" : "create cluster",
+                "condition" : "contains"
+            }
+        ],
+        "field" : [
+            {
+                "name" : "name",
+                "type" : "text",
+                "required": true,
+                "directive" : [
+                    "What is the cluster name",
+                    "The cluster Name what is it"
+                ]
+            },
+            {
+                "name" : "shardcount",
+                "type" : "text",
+                "required": true,
+                "directive" : [
+                    "How many shards will @SLOT.name have",
+                    "@SLOT.name's will have how many shards"
+                ]
+            },
+            {
+                "name" : "confirm",
+                "type" : "confirm",
+                "options": [{"name": "yes","id": "yes"},
+                            {"name": "no","id": "no"}
+                           ],
+                "required": true,
+                "directive" : [
+                    "Create a cluster named @SLOT.name",
+                    "@SLOT.name will be added as a cluster"
+                ]
+            }
+        ]
+    },
+    "CREATESHARD" : {
+        "action" : "PUT",
+        "score": 1,
+        "response" : [
+            "Shard was created, @SLOT.name has @SLOT.shardcollection as a colllection",
+            "@SLOT.name was created that has @SLOT.shardcollection collection"
+        ],
+        "failedResponse" : [
+            "Shard was not created, @SLOT.name with @SLOT.shardcollection as a collection",
+            "@SLOT.name was not created with @SLOT.shardcollection collection"
+        ],
+        "grammar" : [
+            {
+                "text" : "create shard",
+                "condition" : "contains"
+            }
+        ],
+        "field" : [
+            {
+                "name" : "name",
+                "type" : "text",
+                "required": true,
+                "directive" : [
+                    "What is the shard name",
+                    "The shard Name what is it"
+                ]
+            },
+            {
+                "name" : "shardcollection",
+                "type" : "text",
+                "required": true,
+                "directive" : [
+                    "What is the name of the collection @SLOT.name will have",
+                    "@SLOT.name's will have a collection and its name will be"
+                ]
+            },
+            {
+                "name" : "confirm",
+                "type" : "confirm",
+                "options": [{"name": "yes","id": "yes"},
+                            {"name": "no","id": "no"}
+                           ],
+                "required": true,
+                "directive" : [
+                    "Create a shard named @SLOT.name",
+                    "@SLOT.name will be added as a shard"
+                ]
+            }
+        ]
+    },
+    "CREATEDOCUMENT" : {
+        "action" : "PUT",
+        "score": 1,
+        "response" : [
+            "Document was created, @SLOT.title with content @SLOT.content",
+            "@SLOT.title was created with info @SLOT.content"
+        ],
+        "failedResponse" : [
+            "Friend was not created, @SLOT.name that lives at @SLOT.address",
+            "@SLOT.name was not created that lives at @SLOT.address"
+        ],
+        "grammar" : [
+            {
+                "text" : "create document",
+                "condition" : "contains"
+            }
+        ],
+        "field" : [
+            {
+                "name" : "title",
+                "type" : "text",
+                "required": true,
+                "directive" : [
+                    "What is the document title",
+                    "Document title what is it"
+                ]
+            },
+            {
+                "name" : "content",
+                "type" : "text",
+                "required": true,
+                "directive" : [
+                    "What is @SLOT.title's content",
+                    "@SLOT.title's content what is it"
+                ]
+            },
+            {
+                "name" : "confirm",
+                "type" : "confirm",
+                "options": [{"name": "yes","id": "yes"},
+                            {"name": "no","id": "no"}
+                           ],
+                "required": true,
+                "directive" : [
+                    "Create a document with title @SLOT.title",
+                    "@SLOT.title will be added as a document"
+                ]
+            }
+        ]
+    },
+    "HELP" : {
+        "action" : "GET",
+        "score": 1,
+        "response" : [
+            "Here is the help for @SLOT.what",
+            "@SLOT.what help is"
+        ],
+        "failedResponse" : [
+            "No help for @SLOT.what",
+            "@SLOT.what help is missing"
+        ],
+        "grammar" : [
+            {
+                "text" : "help",
+                "condition" : "contains"
+            }
+        ],
+        "field" : [
+            {
+                "name" : "what",
+                "type" : "text",
+                "required": true,
+                "directive" : [
+                    "What do you want help with",
+                    "What can I help you with"
+                ]
+            }
+        ]
+    },
+    "CREATETIME" : {
+        "action" : "PUT",
+        "score": 1,
+        "response" : [
+            "Time was created, @SLOT.name using @SLOT.equipment",
+            "@SLOT.name was created that used @SLOT.equipment"
+        ],
+        "failedResponse" : [
+            "Time was not created, @SLOT.name with @SLOT.equipment",
+            "@SLOT.name was not created using @SLOT.equipment"
+        ],
+        "grammar" : [
+            {
+                "text" : "create time",
+                "condition" : "contains"
+            }
+        ],
+        "field" : [
+            {
+                "name" : "name",
+                "type" : "text",
+                "required": true,
+                "directive" : [
+                    "What is the name for this time entry",
+                    "The time entry Name what is it"
+                ]
+            },
+            {
+                "name" : "equipment",
+                "type" : "text",
+                "required": true,
+                "directive" : [
+                    "What equipment are you using for @SLOT.name",
+                    "@SLOT.name's will use which piece of equipment"
+                ]
+            },
+            {
+                "name" : "comments",
+                "type" : "text",
+                "required": true,
+                "directive" : [
+                    "What comments do you have for @SLOT.name",
+                    "@SLOT.name's additional comments"
+                ]
+            },
+            {
+                "name" : "starttime",
+                "type" : "text",
+                "required": true,
+                "directive" : [
+                    "When did you start working for @SLOT.name",
+                    "@SLOT.name's start at"
+                ]
+            },
+            {
+                "name" : "endtime",
+                "type" : "text",
+                "required": true,
+                "directive" : [
+                    "When did you finish operating @SLOT.equipment for @SLOT.name",
+                    "@SLOT.name's work ended at"
+                ]
+            },
+            {
+                "name" : "confirm",
+                "type" : "confirm",
+                "options": [{"name": "yes","id": "yes"},
+                            {"name": "no","id": "no"}
+                           ],
+                "required": true,
+                "directive" : [
+                    "Create a time entry named @SLOT.name",
+                    "@SLOT.name will be added as a time entry"
+                ]
+            }
+        ]
+    },
+    "ABORT" : {
+        "action" : "PUT",
+        "score": 1,
+        "response" : [
+            "What can I do for you",
+            "Starting over, what can I do for you"
+        ],
+        "grammar" : [
+            {
+                "text" : "abort",
+                "condition" : "contains"
+            }
+        ]
+    },
+    "STATEMENT" : {
+        "action" : "PUT",
+        "score": 0,
+        "response" : [
+            "Are you serious",
+            "That was interesting",
+            "I do not understand"
+        ],
+        "grammar" : [
+            {
+                "text" : "ddddd.*",
+                "condition" : "any"
+            }
+        ]
+    }
+}
