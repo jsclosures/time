@@ -620,7 +620,7 @@ getData: function(args){
             
             var counter = 0;
             for(var p in args){
-                if( args.hasOwnProperty(p) ){
+                if( args.hasOwnProperty(p) && p != 'callback' ){
                     if( counter > 0 )
                         tURL += "&";
                     tURL += p + "=" + args[p];    
