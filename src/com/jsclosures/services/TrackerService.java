@@ -24,6 +24,7 @@ public class TrackerService extends SolrService {
                                             {"endtime","STRING"},
                                             {"username","STRING"},
                                             {"contenttype","STRING"},
+                                            {"contentowner","STRING"},
                                             {"last_modified","DATE"}};
      public static String CONTENTTYPE = "TRACKER";
     public static String CONTENTTYPEPREFIX = "TR";

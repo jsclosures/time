@@ -48,6 +48,7 @@ public class MainService extends RestServiceServlet {
             String currentUserName = user.getString("username");
             
             if( user.isValid("id") ){
+               
                 if (mode.equalsIgnoreCase("GET")) {
                     
                     
@@ -55,6 +56,10 @@ public class MainService extends RestServiceServlet {
                     Helper.readSortArguments(this, req, queryArgs);
                     Helper.readPagingArguments(this, req, queryArgs);
                     queryArgs.setValue("user",currentUserName);
+                    queryArgs.setValue("username",currentUserName);
+                    if( !queryArgs.isValid("contentowner") ){
+                        queryArgs.setValue("contentowner",user.getString("contentowner","zen"));
+                    }
                     queryArgs.setObject("request",req);
                     queryArgs.setObject("response",resp);
                     
@@ -73,6 +78,10 @@ public class MainService extends RestServiceServlet {
                     DataBean queryArgs = Helper.readAllJSONParameters(this, req);
                     contentType = queryArgs.getString("contenttype");
                     queryArgs.setValue("user",currentUserName);
+                    queryArgs.setValue("username",currentUserName);
+                    if( !queryArgs.isValid("contentowner") ){
+                        queryArgs.setValue("contentowner",user.getString("contentowner","zen"));
+                    }
                     queryArgs.setObject("request",req);
                     queryArgs.setObject("response",resp);
                     
@@ -90,6 +99,10 @@ public class MainService extends RestServiceServlet {
                     DataBean queryArgs = Helper.readAllJSONParameters(this, req);
                     contentType = queryArgs.getString("contenttype");
                     queryArgs.setValue("user",currentUserName);
+                    queryArgs.setValue("username",currentUserName);
+                    if( !queryArgs.isValid("contentowner") ){
+                        queryArgs.setValue("contentowner",user.getString("contentowner","zen"));
+                    }
                     queryArgs.setObject("request",req);
                     queryArgs.setObject("response",resp);
                     try{
@@ -107,6 +120,10 @@ public class MainService extends RestServiceServlet {
                     
                     contentType = queryArgs.getString("contenttype");
                     queryArgs.setValue("user",currentUserName);
+                    queryArgs.setValue("username",currentUserName);
+                    if( !queryArgs.isValid("contentowner") ){
+                        queryArgs.setValue("contentowner",user.getString("contentowner","zen"));
+                    }
                     queryArgs.setObject("request",req);
                     queryArgs.setObject("response",resp);    
                     try{
@@ -123,6 +140,27 @@ public class MainService extends RestServiceServlet {
                     try{
                         RestImplService gs = loadServiceClass(mappingRec.getString(contentType));
                         DataBean queryArgs = Helper.readAllParameters(this, req);
+                        queryArgs.setValue("user",currentUserName);
+                        queryArgs.setValue("username",currentUserName);
+                        if( !queryArgs.isValid("contentowner") ){
+                            queryArgs.setValue("contentowner",user.getString("contentowner","zen"));
+                        }
+                        queryArgs.setObject("request",req);
+                        queryArgs.setObject("response",resp);
+                        result = gs.getData(this, queryArgs);
+                    }catch(Exception e){
+                        writeLog(1,"Handler: " + e.toString());
+                    }
+                }
+                else if( contentType.equalsIgnoreCase("SIGNUP") ) {
+                    try{
+                        RestImplService gs = loadServiceClass(mappingRec.getString(contentType));
+                        DataBean queryArgs = Helper.readAllParameters(this, req);
+                        queryArgs.setValue("user",currentUserName);
+                        queryArgs.setValue("username",currentUserName);
+                        if( !queryArgs.isValid("contentowner") ){
+                            queryArgs.setValue("contentowner",user.getString("contentowner","zen"));
+                        }
                         queryArgs.setObject("request",req);
                         queryArgs.setObject("response",resp);
                         result = gs.getData(this, queryArgs);
@@ -132,12 +170,23 @@ public class MainService extends RestServiceServlet {
                 }
                 else {
                     result.setValue("status", "-1");
-                    result.setValue("message", "AUTHFAILED");
+                    result.setValue("message", "NOHANDLER");
                 }
             }
         }
         else {
             if( contentType.equalsIgnoreCase("INIT") ) {
+                try{
+                    RestImplService gs = loadServiceClass(mappingRec.getString(contentType));
+                    DataBean queryArgs = Helper.readAllParameters(this, req);
+                    queryArgs.setObject("request",req);
+                    queryArgs.setObject("response",resp);
+                    result = gs.getData(this, queryArgs);
+                }catch(Exception e){
+                    writeLog(1,"Handler: " + e.toString());
+                }
+            }
+            else if( contentType.equalsIgnoreCase("SIGNUP") ) {
                 try{
                     RestImplService gs = loadServiceClass(mappingRec.getString(contentType));
                     DataBean queryArgs = Helper.readAllParameters(this, req);

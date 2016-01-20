@@ -24,6 +24,7 @@ public class AuthService implements RestImplService {
         {"authkey","STRING"},
         {"authname","STRING"},
         {"contenttype","STRING"},
+        {"contentowner","STRING"},
         {"last_modified","DATE"}};
     public DataBean getData(RestService context, DataBean args) {
     	

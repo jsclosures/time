@@ -19,6 +19,7 @@ public class EquipmentService extends SolrService {
                                             {"name","STRING"},
                                             {"comments","STRING"},
                                             {"username","STRING"},
+                                            {"contentowner","STRING"},
                                             {"contenttype","STRING"},
                                             {"last_modified","DATE"}};
      public static String CONTENTTYPE = "EQUIPMENT";

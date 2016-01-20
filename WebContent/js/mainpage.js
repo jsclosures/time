@@ -51,7 +51,7 @@ function internalBuildMainPage(mainContext, mainId) {
                         for(var i = 0;i < response.items.length;i++){
                             var item = response.items[i];
                             var newItem = {id: item.id,
-                                            label: item.id,
+                                            label: item.contenttitle,
                                             title: item.contenttitle,
                                             body: item.contentbody,
                                             actualRecord: item,
@@ -67,7 +67,7 @@ function internalBuildMainPage(mainContext, mainId) {
                     
                     dijit.byId(mainForm + "itemlist").setStore(newStore);
                 }
-                getCurrentContext().CacheManager.getData({contenttype:"CONTENT",nocache: true,content: data.query,callback: doLater});
+                getCurrentContext().CacheManager.getData({contenttype:"CONTENT",nocache: true,contentbody: data.query,callback: doLater});
                         
         }
         context.initChild = function () {

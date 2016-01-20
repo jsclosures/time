@@ -27,6 +27,7 @@ public class SolrService implements RestImplService {
     }
     private String fieldList[][] = {{"id","NUMBER"},
                                             {"contenttype","STRING"},
+                                            {"contentowner","STRING"},
                                             {"last_modified","DATE"}};
     private String contentType = "CONTENT";
     private String contentTypePrefix = "CT";

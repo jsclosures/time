@@ -20,6 +20,7 @@ public class JobService extends SolrService {
                                             {"comments","STRING"},
                                             {"username","STRING"},
                                             {"contenttype","STRING"},
+                                            {"contentowner","STRING"},
                                             {"last_modified","DATE"}};
      public static String CONTENTTYPE = "JOB";
     public static String CONTENTTYPEPREFIX = "JB";

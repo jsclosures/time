@@ -22,6 +22,7 @@ public class InitService implements RestImplService {
         {"username","STRING"},
         {"userkey","STRING"},
         {"contenttype","STRING"},
+        {"contentowner","STRING"},
         {"last_modified","DATE"}};
     
     public DataBean getData(RestService context,DataBean args) {
@@ -56,6 +57,8 @@ public class InitService implements RestImplService {
         
         solrTmp.setValue("username","zen");  
         solrTmp.setValue("userkey",Helper.hashUserKey("1234"));  
+        solrTmp.setValue("contentowner","zen");  
+        
         solrTmp.setValue("last_modified",SolrHelper.getTimestamp()); 
 
         resultList.add(solrTmp);

@@ -771,98 +771,86 @@ public class SolrHelper
               hasData = true;
          }
          
-         String attributevaluestr = queryArgs.getString("attributevaluestr","");
+         String contentowner = queryArgs.getString("contentowner","");
          //org.apache.solr.client.solrj.util.ClientUtils.escapeQueryChars(
-         if( attributevaluestr.length() > 0 )
+         if( contentowner.length() > 0 )
          {
               if( hasData )
-                 queryStr = queryStr + " AND attributevaluestr:(\"" + attributevaluestr + "\")";
+                 queryStr = queryStr + " AND contentowner:(\"" + contentowner + "\")";
               else
-                   queryStr = "attributevaluestr:(\"" + attributevaluestr + "\")";
+                   queryStr = "contentowner:(\"" + contentowner + "\")";
               
               hasData = true;
          }
          
-         String attributenamestr = queryArgs.getString("attributenamestr","");
-         //org.apache.solr.client.solrj.util.ClientUtils.escapeQueryChars(
-         if( attributenamestr.length() > 0 )
+         String useremail = queryArgs.getString("useremail","");
+         
+         if( useremail.length() > 0 )
          {
               if( hasData )
-                 queryStr = queryStr + " AND attributenamestr:(\"" + attributenamestr + "\")";
+                 queryStr = useremail + " AND useremail:(\"" + useremail + "\")";
               else
-                   queryStr = "attributenamestr:(\"" + attributenamestr + "\")";
+                   queryStr = "useremail:(\"" + useremail + "\")";
               
               hasData = true;
          }
          
-         String modelStr = queryArgs.getString("modelstr","");
+         String job = queryArgs.getString("job","");
          
-         if( modelStr.length() > 0 )
+         if( job.length() > 0 )
          {
               if( hasData )
-                 queryStr = queryStr + " AND modelstr:(\"" + modelStr + "\")";
+                 queryStr = queryStr + " AND job:(\"" + job + "\")";
               else
-                   queryStr = "modelstr:(\"" + modelStr + "\")";
+                   queryStr = "job:(\"" + job + "\")";
               
               hasData = true;
          }
          
-         String brandStr = queryArgs.getString("brandstr","");
+         String equipment = queryArgs.getString("equipment","");
          
-         if( brandStr.length() > 0 )
+         if( equipment.length() > 0 )
          {
               if( hasData )
-                 queryStr = queryStr + " AND brandstr:(\"" + brandStr + "\")";
+                 queryStr = queryStr + " AND equipment:(\"" + equipment + "\")";
               else
-                   queryStr = "brandstr:(\"" + brandStr + "\")";
+                   queryStr = "equipment:(\"" + equipment + "\")";
               
               hasData = true;
          }
          
-         String manufacturerStr = queryArgs.getString("manufacturerstr","");
-         
-         if( manufacturerStr.length() > 0 )
-         {
-              if( hasData )
-                 queryStr = queryStr + " AND manufacturerstr:(\"" + manufacturerStr + "\")";
-              else
-                   queryStr = "manufacturerstr:(\"" + manufacturerStr + "\")";
-              
-              hasData = true;
-         }
-         
-        String category = queryArgs.getString("category","");
+        String comments = queryArgs.getString("comments","");
            
-           if( category.length() > 0 )
+           if( comments.length() > 0 )
            {
                 if( hasData )
-                   queryStr = queryStr + " AND category:('" + category + "')";
+                   queryStr = queryStr + " AND comments:" + comments + "";
                 else
-                     queryStr = "category:('" + category + "')";
+                     queryStr = "comments:" + comments + "";
                 
                 hasData = true;
            }
            
-        String model = queryArgs.getString("model","");
+        String contentall = queryArgs.getString("contentall","");
            
-           if( model.length() > 0 )
+           if( contentall.length() > 0 )
            {
                 if( hasData )
-                   queryStr = queryStr + " AND model:('" + model.replaceAll(" "," AND ") + "')";
+                   queryStr = queryStr + " AND contentall:('" + contentall.replaceAll(" "," AND ") + "')";
                 else
-                     queryStr = "model:('" + model.replaceAll(" "," AND ") + "')";
+                     queryStr = "contentall:('" + contentall.replaceAll(" "," AND ") + "')";
                 
                 hasData = true;
            }
            
-        String manufacturer = queryArgs.getString("manufacturer","");
+        String contenttitle = queryArgs.getString("contenttitle","");
            
-           if( manufacturer.length() > 0 )
+           if( contenttitle.length() > 0 )
            {
                 if( hasData )
-                   queryStr = queryStr + " AND manufacturer:('" + manufacturer.replaceAll(" "," AND ") + "')";
+                   queryStr = queryStr + " AND contenttitle:('" + contenttitle.replaceAll(" "," AND ") + "')";
                 else
-                     queryStr = "manufacturer:('" + manufacturer.replaceAll(" "," AND ") + "')";
+                     queryStr = "contenttitle:('" + contenttitle.replaceAll(" "," AND ") + "')";
                 
                 hasData = true;
            }
@@ -878,187 +866,6 @@ public class SolrHelper
                 
                 hasData = true;
            }
-           
-        String source = queryArgs.getString("source","");
-           
-           if( source.length() > 0 )
-           {
-                if( hasData )
-                   queryStr = queryStr + " AND source:(" + source.toUpperCase().replaceAll("~~~"," OR ") + ")";
-                else
-                     queryStr = "source:(" + source.toUpperCase().replaceAll("~~~"," OR ") + ")";
-                
-                hasData = true;
-           }
-           
-           String brand = queryArgs.getString("brand","");
-           
-           if( brand.length() > 0 )
-           {
-                if( hasData )
-                   queryStr = queryStr + " AND brand:('" + brand.replaceAll(" "," AND ") + "')";
-                else
-                     queryStr = "brand:('" + brand.replaceAll(" "," AND ") + "')";
-                
-                hasData = true;
-           }
-           
-           String externalid = queryArgs.getString("externalid","");
-           
-           if( externalid.length() > 0 )
-           {
-                if( hasData )
-                   queryStr = queryStr + " AND externalid:('" + externalid + "')";
-                else
-                     queryStr = "externalid:('" + externalid + "')";
-                
-                hasData = true;
-           }
-           
-           String sourceid = queryArgs.getString("sourceid","");
-           
-           if( sourceid.length() > 0 )
-           {
-                if( hasData )
-                   queryStr = queryStr + " AND sourceid:('" + sourceid + "')";
-                else
-                     queryStr = "sourceid:('" + sourceid + "')";
-                
-                hasData = true;
-           }
-           
-           String attributevalue = queryArgs.getString("attributevalue","");
-           
-           if( attributevalue.length() > 0 )
-           {
-                if( hasData )
-                   queryStr = queryStr + " AND attributevalue:('" + attributevalue.replaceAll(" "," AND ") + "')";
-                else
-                     queryStr = "attributevalue:('" + attributevalue.replaceAll(" "," AND ") + "')";
-                
-                hasData = true;
-           }
-           
-           String memory = queryArgs.getString("memory","");
-           
-           if( memory.length() > 0 )
-           {
-                if( hasData )
-                   queryStr = queryStr + " AND memory:('" + memory.replaceAll(" "," AND ") + "')";
-                else
-                     queryStr = "memory:('" + memory.replaceAll(" "," AND ") + "')";
-                
-                hasData = true;
-           }
-           
-           String processortype = queryArgs.getString("processortype","");
-           
-           if( processortype.length() > 0 )
-           {
-                if( hasData )
-                   queryStr = queryStr + " AND processortype:('" + processortype.replaceAll(" "," AND ") + "')";
-                else
-                     queryStr = "processortype:('" + processortype.replaceAll(" "," AND ") + "')";
-                
-                hasData = true;
-           }
-           
-           String processorspeed = queryArgs.getString("processorspeed","");
-           
-           if( processorspeed.length() > 0 )
-           {
-                if( hasData )
-                   queryStr = queryStr + " AND processorspeed:('" + processorspeed.replaceAll(" "," AND ") + "')";
-                else
-                     queryStr = "processorspeed:('" + processorspeed.replaceAll(" "," AND ") + "')";
-                
-                hasData = true;
-           }
-           
-           String operatingsystem = queryArgs.getString("operatingsystem","");
-           
-           if( operatingsystem.length() > 0 )
-           {
-                if( hasData )
-                   queryStr = queryStr + " AND operatingsystem:('" + operatingsystem.replaceAll(" "," AND ") + "')";
-                else
-                     queryStr = "operatingsystem:('" + operatingsystem.replaceAll(" "," AND ") + "')";
-                
-                hasData = true;
-           }
-           
-           String harddrivecapacity = queryArgs.getString("harddrivecapacity","");
-           
-           if( harddrivecapacity.length() > 0 )
-           {
-                if( hasData )
-                   queryStr = queryStr + " AND harddrivecapacity:('" + harddrivecapacity.replaceAll(" "," AND ") + "')";
-                else
-                     queryStr = "harddrivecapacity:('" + harddrivecapacity.replaceAll(" "," AND ") + "')";
-                
-                hasData = true;
-           }
-           
-           String mapField = queryArgs.getString("mapfield","");
-           
-           if( mapField.length() > 0 )
-           {
-        	   if( hasData )
-                   queryStr = queryStr + " AND mapfield:(\"" + mapField + "\")";
-                else
-                     queryStr = "mapfield:(\"" + mapField + "\")";
-                
-                hasData = true;
-           }
-           
-           String mapKey = queryArgs.getString("mapkey","");
-           
-           if( mapKey.length() > 0 )
-           {
-        	   if( hasData )
-                   queryStr = queryStr + " AND mapkey:(\"" + mapKey + "\")";
-                else
-                     queryStr = "mapkey:(\"" + mapKey + "\")";
-                
-                hasData = true;
-           }
-           
-           String attributename = queryArgs.getString("attributename","");
-           
-           if( attributename.length() > 0 )
-           {
-                if( hasData )
-                   queryStr = queryStr + " AND attributename:('" + attributename.replaceAll(" "," AND ") + "')";
-                else
-                     queryStr = "attributename:('" + attributename.replaceAll(" "," AND ") + "')";
-                
-                hasData = true;
-           }
-           
-           String price = queryArgs.getString("price","");
-           
-           if( queryArgs.isValid("price") )
-           {
-                if( hasData )
-                     queryStr = queryStr + " AND price:[" + queryArgs.getFloat("price") + " TO *]";
-                else
-                     queryStr = "price:[" + queryArgs.getFloat("price") + " TO *]";
-                
-                hasData = true;
-           }
-           
-            
-            if( queryArgs.isValid("startdate") )
-            {
-                String startDate = queryArgs.getString("startdate","");
-                
-                 if( hasData )
-                      queryStr = queryStr + " AND last_modified:[" + startDate + " TO *]";
-                 else
-                      queryStr = "last_modified:[" + startDate + " TO *]";
-                 
-                 hasData = true;
-            }
             
         String username = queryArgs.getString("username","");
         
@@ -1141,37 +948,6 @@ public class SolrHelper
             
             solrArgs.setValue("fq",fq);
         }
-           
-           
-           String filter = queryArgs.getString("filter","");
-           
-           if( filter.length() > 0 )
-           {
-        	   ArrayList filterList = Helper.splitFields(filter, "~~~");
-        	   
-        	   if( filterList.size() > 0 ){
-        		   StringBuffer filterStr = new StringBuffer("(");
-        		   
-        		   for(int i = 0,size = filterList.size();i < size;i++){
-        			   if( i > 0 )
-        				   filterStr.append(" OR ");
-        			   
-        			   filterStr.append("namestr:\"");
-        			   filterStr.append(filterList.get(i).toString());
-        			   filterStr.append("\"");
-        		   }
-        		   
-        		   filterStr.append(")");
-        		   
-	        	   if( hasData )
-	                   queryStr = queryStr + " AND " + filterStr;
-	                else
-	                     queryStr = filterStr.toString();
-	                
-	                hasData = true;
-        	   }
-           }
-           
            
      
            context.writeLog(1,"query str: " + queryStr);

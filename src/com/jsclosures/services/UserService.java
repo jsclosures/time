@@ -25,7 +25,9 @@ public class UserService implements RestImplService {
         {"username","STRING"},
         {"userkey","STRING"},
         {"useralias","STRING"},
+        {"useremail","STRING"},
         {"contenttype","STRING"},
+        {"contentowner","STRING"},
         {"last_modified","DATE"}};
     
     public DataBean getData(RestService context, DataBean args) {
@@ -117,7 +119,11 @@ public class UserService implements RestImplService {
         solrTmp.setValue("contenttype",CONTENTTYPE);
         
         solrTmp.setValue("username",args.getString("username"));  
-        solrTmp.setValue("userkey",Helper.hashUserKey(args.getString("userkey")));  
+        solrTmp.setValue("userkey",Helper.hashUserKey(args.getString("userkey")));
+        solrTmp.setValue("useralias",args.getString("useralias"));
+        solrTmp.setValue("useralias",args.getString("useralias"));
+        solrTmp.setValue("useremail",args.getString("useremail"));
+        solrTmp.setValue("contentowner",args.getString("contentowner","zen"));
         solrTmp.setValue("last_modified",SolrHelper.getTimestamp()); 
 
         resultList.add(solrTmp);
@@ -172,6 +178,11 @@ public class UserService implements RestImplService {
         
         solrTmp.setValue("username",args.getString("username"));  
         solrTmp.setValue("userkey",Helper.hashUserKey(args.getString("userkey")));    
+        solrTmp.setValue("useralias",args.getString("useralias"));
+        solrTmp.setValue("useralias",args.getString("useralias"));
+        solrTmp.setValue("useremail",args.getString("useremail"));
+        solrTmp.setValue("contentowner",args.getString("contentowner","zen"));
+        
         solrTmp.setValue("last_modified",SolrHelper.getTimestamp()); 
 
         resultList.add(solrTmp);

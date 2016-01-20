@@ -47,6 +47,7 @@ public class SessionManager  {
         
         solrTmp.setValue("authname",args.getString("username").toLowerCase());  
         solrTmp.setValue("authkey",Helper.MessageDigestToHex(args.getString("username")+SolrHelper.getTimestamp()));  
+        solrTmp.setValue("contentowner",args.getString("contentowner","zen").toLowerCase());  
         solrTmp.setValue("last_modified",SolrHelper.getTimestamp()); 
 
         ArrayList<DataBean> resultList = new ArrayList<DataBean>();

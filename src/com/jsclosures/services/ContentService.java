@@ -24,6 +24,7 @@ public class ContentService extends SolrService {
         {"contenttitle","STRING"},
         {"contentbody","STRING"},
         {"contenttype","STRING"},
+        {"contentowner","STRING"},
         {"last_modified","DATE"}};
      public static String CONTENTTYPE = "CONTENT";
     public static String CONTENTTYPEPREFIX = "CT";
