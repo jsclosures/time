@@ -422,6 +422,8 @@ function buildApplication(ctx)
                                context.applicationContext.startChild(nextTab);
                        }
                 }
+                
+                getCurrentContext().purgeNextActions();
           }
      }
 }
@@ -1490,7 +1492,12 @@ function buildMobileApplicationHeader(context)
 	var tHeader = new dojox.mobile.Heading({id: context.headerDivName},context.headerDivName);
         registeredWidgetList.push(tHeader.id);
         
-	var tTitle = new dojox.mobile.ToolBarButton({id: "apptitle",
+	/*var tTitle = new dojox.mobile.ToolBarButton({id: "apptitle",
+                                                        label: cContext.UIProfileManager.getString("pleaseWait"),
+                                                        onClick: function(evt){
+                                                            setCurrentView("main");
+                                                        }});*/
+        var tTitle = new dojox.mobile.ToolBarButton({id: "apptitle",
                                                         label: cContext.UIProfileManager.getString("pleaseWait"),
                                                         onClick: function(evt){
                                                             showHelpDialog(getCurrentContext().UIProfileManager.getString('applicationAbout'));
@@ -1499,20 +1506,19 @@ function buildMobileApplicationHeader(context)
 	tHeader.addChild(tTitle);
         
         var tAction = new dojox.mobile.ToolBarButton({id: "appviewselector",
-                                                        label: cContext.UIProfileManager.getString("main"),
+                                                        label: cContext.UIProfileManager.getString("home"),
                                                         onClick: function(evt){
                                                                 var cView = getCurrentView();
-                                                                if( cView == 'main' ){
-                                                                    setCurrentView("tracker");
-                                                                    anyWidgetById("appviewselector").set("label",getCurrentContext().UIProfileManager.getString("tracker"));
-                                                                }
-                                                                else {
+                                                                
+                                                                if( cView === 'tracker' )
                                                                     setCurrentView("main");
-                                                                    anyWidgetById("appviewselector").set("label",getCurrentContext().UIProfileManager.getString("main"));
-                                                                }
+                                                                else
+                                                                    setCurrentView("tracker");
+                                        
                                                         }});
 	registeredWidgetList.push(tAction.id);
 	tHeader.addChild(tAction);
+        
         
         if( cContext.UIProfileManager.getSetting("showLogout") ){
             var actionMenuLogout = new dojox.mobile.ToolBarButton({
@@ -2132,8 +2138,10 @@ function buildTabContainer(ctx) {
                                //console.log("auto start tab: " + nextTab.id);
                                nextTab.started = true;
                                context.applicationContext.startChild(nextTab);
+                               
                        }
                 }
+                getCurrentContext().purgeNextActions();
           }
      }
 	
@@ -2414,11 +2422,3 @@ function addFormLifecycle(seedFrame,key){
           }
     }                
 }
-
-
-
-
-
-
-
-

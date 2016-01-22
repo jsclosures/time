@@ -14,7 +14,6 @@ function buildEquipmentPage(mainContext, mainId,currentChild) {
                     "dojox/mobile/TabBar",
                     "dojox/mobile/TabBarButton",
                     "dojo/data/ItemFileReadStore",
-                    "js/equipmentedit.js",
                     "js/equipmentview.js"
          ], 
          function(){
@@ -67,12 +66,13 @@ function internalBuildEquipmentPage(mainContext, mainId) {
         function onListClick(){
             var item = this;
             console.log(item.actualRecord.equipmenttitle);
-            getCurrentContext().setCurrentView("equipmentview");
             
             var doLater = function(){
                 anyWidgetById("equipmentview").setTarget(item.actualRecord);
             }
-            setTimeout(doLater,1000);
+            
+            getCurrentContext().setCurrentView("equipmentview",[doLater]);  
+                         
         }
         var started = false;
         
@@ -83,11 +83,11 @@ function internalBuildEquipmentPage(mainContext, mainId) {
                     buildMainPage({id: mainForm});
                 }
 
-		console.log("start board page");
+		console.log("start equipment page");
                 var doLater = function(response){
                     /*var storeData = [
-                        { "id":1,"boardtitle": "Board 1", "icon": "images/i-icon-3.png", "rightText": "Join", "moveTo": "bar" ,"onClick": onListClick},
-                        { "id":2,"boardtitle": "Board 2", "icon": "images/i-icon-4.png", "rightText": "Join", "moveTo": "bar" ,"onClick": onListClick}
+                        { "id":1,"equipmenttitle": "Equipment 1", "icon": "images/i-icon-3.png", "rightText": "Join", "moveTo": "bar" ,"onClick": onListClick},
+                        { "id":2,"equipmenttitle": "Equipment 2", "icon": "images/i-icon-4.png", "rightText": "Join", "moveTo": "bar" ,"onClick": onListClick}
                     ];*/
                     var storeData = new Array();
                     
@@ -97,7 +97,7 @@ function internalBuildEquipmentPage(mainContext, mainId) {
                         for(var i = 0;i < response.items.length;i++){
                             var item = response.items[i];
                             var newItem = {id: item.id,
-                            label: item.boardtitle,
+                            label: item.title,
                             actualRecord: item,
                             "icon": "images/equipment.png", 
                             "rightText": uiManager.getString("join"), 
@@ -164,7 +164,7 @@ function internalBuildEquipmentPage(mainContext, mainId) {
             var loginButton = new dojox.mobile.Button({
                     label: "",
                     name: mainId + "action",
-                    innerHTML: profileManager.getString("newBoard"),
+                    innerHTML: profileManager.getString("newEquipment"),
                     colspan: 1,
                     showLabel: false,
                     iconClass: "loginIcon",

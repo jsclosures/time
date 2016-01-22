@@ -20,7 +20,10 @@ var globalAppPadY = 74;
                     "js/mainapp.js",
                     "js/equipment.js",
                     "js/tracker.js",
+                    "js/trackeredit.js",
                     "js/job.js",
+                    "js/jobedit.js",
+                    "js/equipmentedit.js",
                     "lib/mespeak.js"],
     
     function(domConstruct){

@@ -141,13 +141,13 @@ function internalBuildTrackerPage(mainContext, mainId) {
                 if( currentPoints ){
                     for(var i = 0;i < currentPoints.length;i++){
                         if( currentPoints[i].id == pointId ){
-                            getCurrentContext().setCurrentView("trackeredit");  
-                         
+                            
                              var doLater = function(){
                                 anyWidgetById("trackeredit").setTarget(currentPoints[i]);
                              }
                              
-                             setTimeout(doLater,1000);
+                             getCurrentContext().setCurrentView("trackeredit",[doLater]);  
+                         
                             break;
                         }
                     }

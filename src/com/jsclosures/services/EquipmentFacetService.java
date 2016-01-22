@@ -58,7 +58,7 @@ public class EquipmentFacetService extends SolrService {
         if( args.isValid("timeout") )
             timeOut = args.getInt("timeout");
         
-        String facetField = args.getString("field","name");
+        String facetField = args.getString("field","title");
         
         ModifiableSolrParams params = SolrHelper.getQueryParameters();
         params.set("rows","0");
@@ -74,7 +74,7 @@ public class EquipmentFacetService extends SolrService {
         DataBean tCache = SolrHelper.querySolrFacet(server, params);
         context.writeLog(1,"Query: " + tCache.toString() + " error: " + tCache.getString("error"));
         result.setValue("resultcount", tCache.getString("numFound"));
-
+        SolrHelper.releaseServer(server);
         ArrayList<DataBean> entryList = (ArrayList<DataBean>)tCache.getCollection("entrylist");
         if (entryList != null)
         {
@@ -82,8 +82,8 @@ public class EquipmentFacetService extends SolrService {
                     for(int i = 0,size = entryList.size();i < size;i++){
                         if( entryList.get(i).getInt("count") >= 1 ) {
                                 DataBean tmp = new DataBean();
-                                tmp.setValue("id",entryList.get(i).getString("name"));
-                                tmp.setValue("name",entryList.get(i).getString("name"));
+                                tmp.setValue("id",entryList.get(i).getString("title"));
+                                tmp.setValue("name",entryList.get(i).getString("title"));
                             
                                 resultList.add(tmp);
                         }

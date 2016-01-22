@@ -171,17 +171,40 @@ function globalResizeWidget(args){
         }
     }
 }
-function setCurrentView(viewName){
+function setCurrentView(viewName,doLaters){
+    getCurrentContext().nextActions = doLaters;
     dojo.byId(getCurrentContext().mainContainerName).selectTab(viewName);
 }
 
 function getCurrentView(){
     return( dojo.byId(getCurrentContext().mainContainerName).getSelectedTabId() );
 }
+
+function purgeNextActions(){
+    var doLater = function(){
+        if( getCurrentContext().nextActions && getCurrentContext().nextActions.length > 0 ){
+            var doLaters = getCurrentContext().nextActions;
+            getCurrentContext().nextActions = false;
+            
+            for(var i = 0;i < doLaters.length;i++){
+                try {
+                    doLaters[i]();
+                }
+                catch(exp){
+                    console.log("exp: " + exp);
+                }
+            }
+       } 
+    }
+    
+    setTimeout(doLater,1000);
+}
+
 var CURRENTCONTEXT = {
     resizeWidget: globalResizeWidget,
     setCurrentView: setCurrentView,
     getCurrentView: getCurrentView,
+    purgeNextActions: purgeNextActions,
     rtmenabled: true
 };
 
@@ -198,6 +221,7 @@ function resetContext() {
         resizeWidget: globalResizeWidget,
         setCurrentView: setCurrentView,
         getCurrentView: getCurrentView,
+        purgeNextActions: purgeNextActions,
         rtmenabled: true
     };
 }
@@ -911,11 +935,7 @@ function showObjectDialog(title,message,callback,args) {
     
     
     var cb = function(cArgs){
-        if( getObjectDialog() ){
-            try {
-                getObjectDialog().hide(); 
-            }catch(exp){}
-        }
+        getObjectDialog().hide(); 
         try {
             callback(true,args);
         }

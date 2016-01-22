@@ -57,13 +57,19 @@ public class SignUpService implements RestImplService {
         resultList.add(solrTmp);
         
         if( args.isValid("username") && args.isValid("userkey") && args.isValid("useralias") && args.isValid("useremail") ){
-            
+            context.writeLog(1,"signup: " + args.toString());
             UserService service = new UserService();
             DataBean queryArgs = new DataBean();
             queryArgs.setValue("username",args.getValue("username"));
+            queryArgs.setObject("request",args.getObject("request"));
+            queryArgs.setObject("response",args.getObject("response"));
+            context.writeLog(1,"queryArgs: " + queryArgs.toString());
             
             DataBean checkResult = service.getData(context,queryArgs);
+            context.writeLog(1,"checkResult: " + checkResult);
+            
             ArrayList<DataBean> userList = checkResult.getCollection("beanlist");
+            context.writeLog(1,"userList: " + userList);
             
             if( userList == null || userList.size() == 0 ){
                 //save the user
@@ -84,7 +90,7 @@ public class SignUpService implements RestImplService {
                 CloudSolrClient solrServer = SolrHelper.getSolrServer(resourceURL, timeOut);
         
                 DataBean solrAttributeResult = SolrHelper.addDocumentsToSolr(solrServer,FIELDLIST,resultList);
-                
+                SolrHelper.releaseServer(solrServer);
                 solrTmp.setValue("value",solrAttributeResult.getString("error"));
             }
             else {

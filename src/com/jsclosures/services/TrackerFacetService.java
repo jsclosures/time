@@ -74,7 +74,8 @@ public class TrackerFacetService extends SolrService {
         DataBean tCache = SolrHelper.querySolrFacet(server, params);
         context.writeLog(1,"Query: " + tCache.toString() + " error: " + tCache.getString("error"));
         result.setValue("resultcount", tCache.getString("numFound"));
-
+        SolrHelper.releaseServer(server);
+        
         ArrayList<DataBean> entryList = (ArrayList<DataBean>)tCache.getCollection("entrylist");
         if (entryList != null)
         {

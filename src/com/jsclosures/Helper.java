@@ -1518,7 +1518,7 @@ public class Helper extends DataBean {
                         result.append(toJson(subEntry));
                     } else {
                         result.append("\"");
-                        //result.append(StringEscapeUtils.escapeJson(list.get(i).toString()));
+                        result.append(StringEscapeUtils.escapeJson(list.get(i).toString()));
                         result.append("\"");
                     }
                 }

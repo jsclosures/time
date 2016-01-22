@@ -68,7 +68,7 @@ public class InitService implements RestImplService {
         DataBean solrAttributeResult = SolrHelper.addDocumentsToSolr(solrServer,FIELDLIST,resultList);
         //SolrHelper.commitToSolr(solrServer);
         solrTmp.setValue("value",solrAttributeResult.getString("error"));
-        
+        SolrHelper.releaseServer(solrServer);
         result.setCollection("beanlist", resultList);
 
         return (result);

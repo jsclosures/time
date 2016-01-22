@@ -67,12 +67,13 @@ public class UserService implements RestImplService {
         ModifiableSolrParams params = SolrHelper.getQueryParametersFromURLArguments(solrArgs);
         CloudSolrClient server = SolrHelper.getSolrServer(resourceURL, timeOut);
 
-        context.writeLog(1,"datapath: " + resourceURL);
+        context.writeLog(1,"datapath: " + resourceURL + " args: " + solrArgs.toString());
         //check memcached for data if not there then create data with following and add to memcached
         DataBean tCache = SolrHelper.querySolr(server, params, FIELDLIST);
         context.writeLog(1,"Query: " + tCache.toString() + " error: " + tCache.getString("error"));
         result.setValue("resultcount", tCache.getString("numFound"));
-
+        SolrHelper.releaseServer(server);
+        
         ArrayList entryList = tCache.getCollection("entrylist");
         if (entryList != null)
         {
@@ -133,6 +134,7 @@ public class UserService implements RestImplService {
         DataBean solrAttributeResult = SolrHelper.addDocumentsToSolr(solrServer,FIELDLIST,resultList);
         //SolrHelper.commitToSolr(solrServer);
         //SolrHelper.optimizeToSolr(solrServer);
+        SolrHelper.releaseServer(solrServer);
         
         context.writeLog(1,"solr insert attribute result: " + solrAttributeResult.getString("error"));
         
@@ -194,6 +196,7 @@ public class UserService implements RestImplService {
         solrAttributeResult = SolrHelper.addDocumentsToSolr(solrServer,FIELDLIST,resultList);
         //SolrHelper.commitToSolr(solrServer);
         //SolrHelper.optimizeToSolr(solrServer);
+        SolrHelper.releaseServer(solrServer);
         
         context.writeLog(1,"solr update result: " + solrAttributeResult.getString("error"));
         
@@ -245,6 +248,7 @@ public class UserService implements RestImplService {
         
         SolrHelper.removeDocumentsFromSolrByQuery(solrServer,"parentid:" + args.getString("id"));
         //SolrHelper.commitToSolr(solrServer);
+        SolrHelper.releaseServer(solrServer);
         
        // SolrHelper.optimizeToSolr(solrServer);
         

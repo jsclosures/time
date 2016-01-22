@@ -57,6 +57,7 @@ public class SessionManager  {
 
         DataBean solrAttributeResult = SolrHelper.addDocumentsToSolr(solrServer,AuthService.FIELDLIST,resultList);
         //SolrHelper.commitToSolr(solrServer);
+        SolrHelper.releaseServer(solrServer);
         
         DataBean cookieArgs = new DataBean();
         cookieArgs.setValue("path",req.getContextPath());
@@ -90,6 +91,7 @@ public class SessionManager  {
         DataBean solrAttributeResult = SolrHelper.removeDocumentsFromSolr(solrServer,resultList);
 
         //SolrHelper.commitToSolr(solrServer);
+        SolrHelper.releaseServer(solrServer);
         
         DataBean cookieArgs = new DataBean();
         cookieArgs.setValue("path",req.getContextPath());
@@ -128,7 +130,8 @@ public class SessionManager  {
             //check memcached for data if not there then create data with following and add to memcached
             DataBean tCache = SolrHelper.querySolr(server, params, AuthService.FIELDLIST);
             context.writeLog(1,"Sessions Query: " + tCache.toString() + " error: " + tCache.getString("error") + " found: " + tCache.getString("numFound"));
-            
+        SolrHelper.releaseServer(server);
+        
             ArrayList<DataBean> entryList = (ArrayList<DataBean>)tCache.getCollection("entrylist");
             
 
@@ -166,7 +169,8 @@ public class SessionManager  {
             DataBean tCache = SolrHelper.querySolr(server, params, UserService.FIELDLIST);
             context.writeLog(1,"Query: " + tCache.toString() + " error: " + tCache.getString("error"));
             result.setValue("resultcount", tCache.getString("numFound"));
-
+        SolrHelper.releaseServer(server);
+        
             ArrayList entryList = tCache.getCollection("entrylist");
             if (entryList != null && entryList.size() > 0 )
             {
@@ -211,7 +215,8 @@ public class SessionManager  {
             DataBean tCache = SolrHelper.querySolr(server, params, AuthService.FIELDLIST);
             context.writeLog(1,"Query: " + tCache.toString() + " error: " + tCache.getString("error"));
             result.setValue("resultcount", tCache.getString("numFound"));
-
+        SolrHelper.releaseServer(server);
+        
             ArrayList entryList = tCache.getCollection("entrylist");
             if (entryList != null && entryList.size() > 0 )
             {

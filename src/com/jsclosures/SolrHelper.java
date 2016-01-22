@@ -55,15 +55,28 @@ public class SolrHelper
         {"sourcename","STRING"},
         {"sourcekey","STRING"},
         {"contenttype","STRING"}};
+    
+    public static void releaseServer(CloudSolrClient server){
+        try{
+            server.close();
+        }
+        catch(Exception e){
+            Helper.writeLog(1,"close exception: " + e.toString());
+        }
+    }
      /**
 	 *get a instance of a solr server  reutrns null if unable to create instance
 	 * @param url
 	 * @param timeOut
 	 * @return
 	 */
+        //private static CloudSolrClient solrServer = null;
+     
 	public static CloudSolrClient getSolrServer(String url, int timeOut)
 	{
-		CloudSolrClient solr = null;
+	    CloudSolrClient solrServer = null;
+            
+            if( solrServer == null ){
                 String collection = "zen";
                 int idx = url.lastIndexOf(":");
                 String newUrl = url;
@@ -75,19 +88,19 @@ public class SolrHelper
                 
 		try
 		{ //"http://localhost:8080/solr/"
-		solr = new CloudSolrClient(newUrl);
+		solrServer = new CloudSolrClient(newUrl);
 		
 		//HttpClientUtil.setBasicAuth((DefaultHttpClient)solrServer.getLbClient().getHttpClient(),"solr","SolrRocks");
 		//set the collection we are going to add to
-		solr.setDefaultCollection(collection);
-                solr.setZkClientTimeout(timeOut);
+		solrServer.setDefaultCollection(collection);
+                solrServer.setZkClientTimeout(timeOut);
 		}
 		catch (Exception e)
 		{
 			//add logging here
 		}
-
-		return (solr);
+            }
+            return (solrServer);
 	}
  /**
 	 *Commit to a  solr server
@@ -156,8 +169,14 @@ public class SolrHelper
 				for (int j = 0; j < fieldList.length; j++)
 				{
 					tStr = fieldList[j][0];
-					if( tEntry.isValid(tStr) || !fieldList[j][1].equalsIgnoreCase("DATE") )
-						doc.addField(tStr, tEntry.getString(tStr));
+                                        if( tEntry.getCollection(tStr)  != null ){
+                                            ArrayList mvList = tEntry.getCollection(tStr);
+                                            for(int k = 0,kSize = mvList.size();k < kSize;k++){
+                                                doc.addField(tStr, mvList.get(k).toString());
+                                            }
+                                        }
+					else if( tEntry.isValid(tStr) || !fieldList[j][1].equalsIgnoreCase("DATE") )
+						doc.setField(tStr, tEntry.getString(tStr));
 				}
 
 				docs.add(doc);
@@ -851,6 +870,18 @@ public class SolrHelper
                    queryStr = queryStr + " AND contenttitle:('" + contenttitle.replaceAll(" "," AND ") + "')";
                 else
                      queryStr = "contenttitle:('" + contenttitle.replaceAll(" "," AND ") + "')";
+                
+                hasData = true;
+           }
+           
+        String contentbody = queryArgs.getString("contentbody","");
+           
+           if( contentbody.length() > 0 )
+           {
+                if( hasData )
+                   queryStr = queryStr + " AND contentbody:('" + contentbody.replaceAll(" "," AND ") + "')";
+                else
+                     queryStr = "contentbody:('" + contentbody.replaceAll(" "," AND ") + "')";
                 
                 hasData = true;
            }

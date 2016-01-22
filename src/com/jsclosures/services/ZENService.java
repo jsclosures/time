@@ -173,6 +173,8 @@ public class ZENService extends SolrService {
                     }
                 }
             }
+            
+            SolrHelper.releaseServer(solrServer);
         }
         catch(Exception e){
             context.writeLog(2,"action failed: " + e.toString());

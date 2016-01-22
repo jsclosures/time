@@ -11,14 +11,13 @@ function buildEquipmentEditPage(mainContext, mainId,currentChild) {
                     "dojox/mobile/Container",
                     "dojox/mobile/ContentPane",
                     "dojox/mobile/ScrollableView",
-                    "dojox/mobile/DatePicker",
                     "dojox/mobile/TabBar",
                     "dojox/mobile/TabBarButton",
                     "dojo/data/ItemFileReadStore",
-                    "dojox/mobile/DatePicker"
+                    "dojox/mobile/Video"
          ], 
          function(){
-        	 //console.log("building routingedit page");
+        	 //console.log("building Content page");
         	 
         	 internalBuildEquipmentEditPage(mainContext, mainId);
 			 
@@ -38,8 +37,9 @@ function internalBuildEquipmentEditPage(mainContext, mainId) {
     var connectorList = new Array();
     var registeredWidgetList = new Array();
     var formFields = new Array();
-    formFields.push({label: "name",name: "name","type": "TEXTFIELD"});
+    formFields.push({label: "title",name: "title","type": "TEXTFIELD"});
     formFields.push({label: "comments",name: "comments","type": "TEXTFIELD"});
+            
     //console.log("content page context " + context + " in : " + mainId);
 
     if (context) {
@@ -66,6 +66,7 @@ function internalBuildEquipmentEditPage(mainContext, mainId) {
 
         }
         var started = false; 
+        var currentPhoto = false;
         context.startChild = function () {
 		//console.log("start content page");
 		if( !started ){
@@ -76,42 +77,16 @@ function internalBuildEquipmentEditPage(mainContext, mainId) {
 
         context.stopChild = function () {
 		//console.log("stop content page");
-		
-        }
-        function onListClick(){
-            var item = this;
-            console.log(item.actualRecord.name);
-            target = item.actualRecord;
-            for(var i = 0;i < formFields.length;i++){
-                var tField = formFields[i];
-                   
-                var tObj = anyWidgetById(mainForm + tField.name);
+		var video = dojo.byId(mainForm + "video");
                 
-                if( tObj ){
-                    tObj.set("value",target[tField.name] ? target[tField.name] : "");
+                if( video && video.pause ){
+                    video.pause();
                 }
-            }
-            
-            if( target.hasOwnProperty("id") ){
-                hideMobileWidget(false,mainForm + "copy");    
-            }
-            else {
-                hideMobileWidget(true,mainForm + "copy");    
-            }
         }
-        var target = false;
-        context.setTarget = function (t) {
-                target = t;
+        
+        context.setTarget = function (target) {
 		//console.log("start content page");
 		console.log(target);
-                
-                if( target.hasOwnProperty("id") ){
-                    hideMobileWidget(false,mainForm + "copy");    
-                }
-                else {
-                    hideMobileWidget(true,mainForm + "copy");    
-                }
-                
                 for(var i = 0;i < formFields.length;i++){
                     var tField = formFields[i];
                        
@@ -119,44 +94,46 @@ function internalBuildEquipmentEditPage(mainContext, mainId) {
                     
                     if( tObj ){
                         tObj.set("value",target[tField.name] ? target[tField.name] : "");
-                        
-                        if( tField.type != 'DATEFIELD' ){
-                        
-                            var sContext = {widgetId: tObj.id};
-                            
-                            var doLater = function(sData){
-                                var tsData = new dojo.store.Memory({ idProperty: "name", data: sData.items});
-                                                                                            
-                                dijit.byId(this.widgetId).set("store",tsData);
-                            }
-                            
-                            var sCallback = dojo.hitch(sContext,doLater);
-                            
-                            getCurrentContext().CacheManager.getData({contenttype:"EQUIPMENTFACET",nocache:true,field: tField.name,callback: sCallback});
-                        }
                     }
                 }
                 
-                var doLater = function(response){
-                    var storeData = new Array();
-                    
-                    if( response.items ){
-                        for(var i = 0;i < response.items.length;i++){
-                            var item = response.items[i];
-                            var newItem = {id: item.id,label: item.name,actualRecord: item,"icon": "images/equipment.png", "rightText": "Select", "moveTo": "bar" ,"onClick": onListClick};
-                            
-                            storeData.push(newItem);
-                        }
-                    }
-                    var newStore = new dojo.store.Memory({data:storeData, idProperty:"id",labelProperty: "label"});
-                    
-                    dijit.byId(mainForm + "itemlist").setStore(newStore);
+                currentPhoto = false;
+                
+                navigator.getUserMedia = ( navigator.getUserMedia ||
+                       navigator.webkitGetUserMedia ||
+                       navigator.mozGetUserMedia ||
+                       navigator.msGetUserMedia);
+
+                if (navigator.getUserMedia) {
+                   navigator.getUserMedia (
+                
+                      // constraints
+                      {
+                         video: {
+                            mandatory: {
+                              maxWidth: 320,
+                              maxHeight: 240
+                            }
+                          },
+                         audio: false
+                      },
+                
+                      // successCallback
+                      function(localMediaStream) {
+                         var video = dojo.byId(mainForm + "video");
+                         video.src = window.URL.createObjectURL(localMediaStream);
+                         // Do something with the video here, e.g. video.play()
+                         video.play();
+                      },
+                
+                      // errorCallback
+                      function(err) {
+                         console.log("The following error occured: " + err);
+                      }
+                   );
+                } else {
+                   console.log("getUserMedia not supported");
                 }
-                getCurrentContext().CacheManager.getData({contenttype:"EQUIPMENT",nocache:true, distance: 5, location: target.location,callback: doLater});
-        }
-        
-        context.getTarget = function () {
-            return( target );
         }
 
         context.destroyChild = function () {
@@ -176,7 +153,6 @@ function internalBuildEquipmentEditPage(mainContext, mainId) {
     }
 
     function buildMainPage(context){
-                    
             var profileManager = getCurrentContext().UIProfileManager;
             
     
@@ -189,38 +165,34 @@ function internalBuildEquipmentEditPage(mainContext, mainId) {
                     
                     outerContainer.addChild(formContainer);
                     
-                    
-                    for(var i = 0;i < formFields.length;i++){
-                        var tField = formFields[i];
-                        var label = new dojox.mobile.ContentPane({id: mainForm + tField.name + "label",content: profileManager.getString(tField.label)});
-                        registeredWidgetList.push(label.id);
-                        formContainer.addChild(label);
+                    var label = new dojox.mobile.ContentPane({id: mainForm + "titlelabel",content: profileManager.getString("equipmentTitle")});
+                    registeredWidgetList.push(label.id);
+                    formContainer.addChild(label);
     
-                          var newField; 
-                          if( tField.type == 'DATEFIELD' ){
-                                newField = new dojox.mobile.DatePicker(
-                                      {
-                                          id: mainForm + tField.name,
-                                          name: mainForm + tField.name
-                                      }
-                                  );
+              var titleField = new dojox.mobile.TextBox(
+                          {
+                              id: mainForm + "title",
+                              name: mainForm + "title"
                           }
-                          else {
-                            newField = new dojox.mobile.ComboBox(
-                                      {
-                                          id: mainForm + tField.name,
-                                          name: mainForm + tField.name
-                                      }
-                                  );
-                              
+                      );
+                   registeredWidgetList.push(titleField.id);   
+              
+            formContainer.addChild(titleField);
+            
+            
+            var label = new dojox.mobile.ContentPane({id: mainForm + "commentslabel",content: profileManager.getString("comments")});
+                    registeredWidgetList.push(label.id);
+                    formContainer.addChild(label);
+    
+              var titleField = new dojox.mobile.TextBox(
+                          {
+                              id: mainForm + "comments",
+                              name: mainForm + "comments"
                           }
-                                  
-                                  
-                               registeredWidgetList.push(newField.id);   
-                          
-                        formContainer.addChild(newField);
-                    }
-                    
+                      );
+                   registeredWidgetList.push(titleField.id);   
+              
+            formContainer.addChild(titleField);
         
             
             
@@ -231,7 +203,7 @@ function internalBuildEquipmentEditPage(mainContext, mainId) {
     
             var saveButton = new dojox.mobile.Button({
                     label: "",
-                    id: mainForm + "save",
+                    name: mainForm + "save",
                     innerHTML: profileManager.getString("save"),
                     colspan: 1,
                     showLabel: false,
@@ -244,24 +216,24 @@ function internalBuildEquipmentEditPage(mainContext, mainId) {
             registeredWidgetList.push(saveButton.id);
             controlContainer.addChild(saveButton); 
             
-            var copyButton = new dojox.mobile.Button({
+            var photoButton = new dojox.mobile.Button({
                     label: "",
-                    id: mainForm + "copy",
-                    innerHTML: profileManager.getString("copy"),
+                    name: mainForm + "photo",
+                    innerHTML: profileManager.getString("photo"),
                     colspan: 1,
                     showLabel: false,
-                    iconClass: "copyIcon",
+                    iconClass: "photoIcon",
                     onClick: function(){
-                        doCopyAction();
+                        doPhotoAction();
                     }
             });
             
-            registeredWidgetList.push(copyButton.id);
-            controlContainer.addChild(copyButton); 
+            registeredWidgetList.push(photoButton.id);
+            controlContainer.addChild(photoButton); 
             
             var cancelButton = new dojox.mobile.Button({
                     label: "",
-                    id: mainForm + "cancel",
+                    name: mainForm + "cancel",
                     innerHTML: profileManager.getString("cancel"),
                     colspan: 1,
                     showLabel: false,
@@ -274,22 +246,16 @@ function internalBuildEquipmentEditPage(mainContext, mainId) {
             registeredWidgetList.push(cancelButton.id);
             controlContainer.addChild(cancelButton); 
             
-             var storeData = [
-                    
-                ];
-                var newStore = new dojo.store.Memory({data:storeData, idProperty:"id",labelProperty: "name"});
-              var itemList = new dojox.mobile.EdgeToEdgeStoreList(
-                          {
-                              id: mainForm + "itemlist",
-                              name: mainForm + "itemlist",
-                              store: newStore
-                          }
-                      );
-                   registeredWidgetList.push(itemList.id);   
-              
-            formContainer.addChild(itemList);
-            itemList.startup();
             
+            var videoWrapper = new dojox.mobile.ContentPane({id: mainForm + "videowrapper",content: "<video id=\"" + mainForm + "video" + "\" style=\"border: 0px solid black;width: 320px;height: 240px;\"></video>"});
+                    registeredWidgetList.push(videoWrapper.id);
+                    formContainer.addChild(videoWrapper);
+            
+            var viewWrapper = new dojox.mobile.ContentPane({id: mainForm + "viewwrapper",content: "<canvas id=\"" + mainForm + "view" + "\" style=\"border: 0px solid black;width: 320px;height: 240px;\"></canvas>"});
+                    registeredWidgetList.push(viewWrapper.id);
+                    formContainer.addChild(viewWrapper);
+            
+            //var video = new dojox.mobile.video({id: mainForm + "video",src: [{src:"video/sample.mp4", type:"video/mp4"}]},dojo.byId(mainForm + "video"));
             
                formContainer.startup();
                controlContainer.startup();
@@ -298,56 +264,43 @@ function internalBuildEquipmentEditPage(mainContext, mainId) {
     
             function doSaveAction() {
                      var requestData = {contenttype: "EQUIPMENT"};
-                     for(var i = 0;i < formFields.length;i++){
-                        var tField = formFields[i];
-                         requestData[tField.name] = anyWidgetById(mainForm + tField.name).get("value");
+                     requestData.title = anyWidgetById(mainForm + "title").get("value");
+                     requestData.comments = anyWidgetById(mainForm + "comments").get("value");
+                     var bg = currentPhoto ? currentPhoto : doPhotoAction();
+                     if( bg ){
+                         requestData.background = bg;
                      }
-                     if( anyWidgetById(mainId).getTarget().id ){
-                         requestData.id = anyWidgetById(mainId).getTarget().id;
-                     }
-                     
                      console.log(requestData);
                      
                      var doLater = function(data){
-                        for(var i = 0;i < formFields.length;i++){
-                            var tField = formFields[i];
-                             anyWidgetById(mainForm + tField.name).set("value","");
-                         }
+                        anyWidgetById(mainForm + "title").set("value","");
                          getCurrentContext().CacheManager.purgeType({contenttype: "EQUIPMENT"});
                          getCurrentContext().setCurrentView("equipment"); 
                      }
                      var tURL = getCurrentContext().UIProfileManager.getSetting("mojoStoreUrl");
                 
-                     if( requestData.id )
-                        getDataService(tURL, doLater).put(false,requestData);     
-                     else
-                        getDataService(tURL, doLater).post(false,requestData);                
+                     getDataService(tURL, doLater).post(false,requestData);             
             }
             
-            function doCopyAction() {
-                     var requestData = {contenttype: "EQUIPMENT"};
-                     for(var i = 0;i < formFields.length;i++){
-                        var tField = formFields[i];
-                         requestData[tField.name] = anyWidgetById(mainForm + tField.name).get("value");
-                     }
-  
-                     console.log(requestData);
-                     
-                     var doLater = function(data){
-                        for(var i = 0;i < formFields.length;i++){
-                            var tField = formFields[i];
-                             anyWidgetById(mainForm + tField.name).set("value","");
-                         }
-                         getCurrentContext().CacheManager.purgeType({contenttype: "EQUIPMENT"});
-                         getCurrentContext().setCurrentView("equipment"); 
-                     }
-                     var tURL = getCurrentContext().UIProfileManager.getSetting("mojoStoreUrl");
+            function doPhotoAction() {
+                var video = anyWidgetById(mainForm + "video");
+                var result = false;
+                if( video ){
+                    var canvas = dojo.byId(mainForm + "view");
+                    var ctx = canvas.getContext('2d');
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                     var imageData = canvas.toDataURL('image/png', 1);
+                     console.log(imageData);
+                     result = imageData;
+                     currentPhoto = result;
+                }
                 
-                     getDataService(tURL, doLater).post(false,requestData);                
+                return( result );
             }
             
             function doCancelAction() {
-                     getCurrentContext().setCurrentView("equipment");           
+                     getCurrentContext().setCurrentView("equipment");
+                     
             }
             
             

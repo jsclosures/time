@@ -40,6 +40,7 @@ function internalBuildTrackerEditPage(mainContext, mainId) {
     var registeredWidgetList = new Array();
     var formFields = new Array();
     formFields.push({label: "name",name: "name","type": "TEXTFIELD"});
+    formFields.push({label: "job",name: "job","type": "COMBOFIELD",contentType: "JOB"});
     formFields.push({label: "equipment",name: "equipment","type": "COMBOFIELD",contentType: "EQUIPMENT"});
     formFields.push({label: "location",name: "location","type": "TEXTFIELD"});
     formFields.push({label: "comments",name: "comments","type": "TEXTFIELD"});
@@ -78,6 +79,7 @@ function internalBuildTrackerEditPage(mainContext, mainId) {
                     buildMainPage({id: mainForm});
                     started = true;
                 }
+                getCurrentContext().purgeNextActions();
         }
 
         context.stopChild = function () {
@@ -110,6 +112,14 @@ function internalBuildTrackerEditPage(mainContext, mainId) {
                 target = t;
 		//console.log("start content page");
 		console.log(target);
+                
+                if( !target.location ){
+                    var pos = getCurrentContext().GeoLocation.position.coords;
+                    
+                    target.location =  pos.latitude + "," + pos.longitude;
+                    target.latitude = pos.latitude;
+                    target.longitude = pos.longitude;
+                }
                 
                 if( target.hasOwnProperty("id") ){
                     hideMobileWidget(false,mainForm + "copy");    
