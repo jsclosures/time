@@ -14,6 +14,7 @@ public class TrackerService extends SolrService {
         setContentType(CONTENTTYPE);
         setContentTypePrefix(CONTENTTYPEPREFIX);
         setFieldList(FIELDLIST);
+        setSort("last_modified desc");
     }
     public static String FIELDLIST[][] = {{"id","NUMBER"},
                                             {"name","STRING"},

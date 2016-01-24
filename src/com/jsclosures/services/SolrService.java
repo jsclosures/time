@@ -32,7 +32,7 @@ public class SolrService implements RestImplService {
     private String contentType = "CONTENT";
     private String contentTypePrefix = "CT";
     private boolean hasParent = false;
-    private String sortOn = "";
+    private String sortOn = "last_modified desc";
     
     public void setHasParent(boolean hasParent){
         this.hasParent = hasParent;
@@ -71,6 +71,10 @@ public class SolrService implements RestImplService {
         String dataSourceURL = SolrHelper.getDefaultDataSourceURL(context);
         
         DataBean solrArgs = SolrHelper.getDefaultArguments(context);
+        
+        if( args.isValid("sort") ){
+            solrArgs.setValue("sort",args.getValue("sort"));
+        }
         
         args.setValue("contenttype",contentType);
         

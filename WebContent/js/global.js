@@ -1,7 +1,8 @@
 var API = {
-	appContext : '/zen', 
-	baseURL : '/zen/', 
-    imageURL : '/zen/images/', 
+	appContext : '/time', 
+        messageContext : ':9990/time', 
+	baseURL : '/time/', 
+    imageURL : '/time/images/', 
     profileURL : 'conf/uiprofile.json',
     configurationPath: 'conf/'
 };
@@ -734,7 +735,7 @@ function _connectToRTM(){
         }
         
         cometd.configure({
-            url: origin + getAPI().appContext + '/cometd',
+            url: origin + getAPI().messageContext + '/cometd',
             logLevel: 'info'
         });
         

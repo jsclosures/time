@@ -13,7 +13,8 @@ var globalAppPadY = 74;
  */
  function launchApplication(args) {
     require(["dojo/dom-construct",
-                    "js/login.js",
+                                                                    "js/mojo.js",
+						"js/uihelper.js","js/login.js",
                     "js/mainpage.js",
                     "js/content.js",
                     "js/zen.js",

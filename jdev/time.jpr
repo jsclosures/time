@@ -169,7 +169,7 @@
                   </hash>
                </list>
             </hash>
-            <url n="jarURL" path="../../../../../../apps/apache-tomcat-7.0.42/webapps/time.war"/>
+            <url n="jarURL" path="../../../../../../apps/apache-tomcat-8.0.18/webapps/time.war"/>
             <value n="profileClass" v="oracle.jdeveloper.deploy.war.WarProfile"/>
             <value n="profileName" v="zen"/>
          </hash>

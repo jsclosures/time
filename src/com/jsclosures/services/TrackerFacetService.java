@@ -63,6 +63,7 @@ public class TrackerFacetService extends SolrService {
         ModifiableSolrParams params = SolrHelper.getQueryParameters();
         params.set("rows","0");
         params.set("facet","true");
+        params.set("facet.sort","last_modified desc");
         params.set("facet.field",facetField);
         params.set("facet.mincount","1");
         params.set("q","contenttype:" + CONTENTTYPE);

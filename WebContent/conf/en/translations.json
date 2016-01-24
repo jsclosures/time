@@ -5,7 +5,7 @@
             "timeFormat": "H:m:s.S",
             "locale": "en_US", 
             "timeZone": "America/New_York",
-            "resultDateFormat": [{"label": "MM-dd-yy HH:mm:ss","value": "MM-dd-yy HH:mm:ss"},{"label": "MM-dd hh:mm a","value": "MM-dd hh:mm a"}]
+            "resultDateFormat": [{"label": "MM-dd-yy HH:mm","value": "MM-dd-yy HH:mm"},{"label": "MM-dd hh:mm a","value": "MM-dd hh:mm a"}]
 },
 "translation": {
     "applicationTitle": "Time.Capture.Club",

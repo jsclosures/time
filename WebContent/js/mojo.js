@@ -136,6 +136,15 @@ getString: function(stringToken){
         
     return( result );
 },
+getCurrentTime: function(hoursApart){
+    var startTime = new Date();
+     var endTime = new Date();
+    endTime.setTime(startTime.getTime() + (hoursApart*60*60*1000));
+    var uiManager = getCurrentContext().UIProfileManager;
+    
+    var result = {starttime: uiManager.formatDate(startTime),endtime: uiManager.formatDate(endTime)};
+    return( result );
+},
 getHelp: function(stringToken){
     var result = stringToken;
     

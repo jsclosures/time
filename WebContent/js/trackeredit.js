@@ -120,6 +120,15 @@ function internalBuildTrackerEditPage(mainContext, mainId) {
                     target.latitude = pos.latitude;
                     target.longitude = pos.longitude;
                 }
+                var currentTime = getCurrentContext().UIProfileManager.getCurrentTime(target.hours ? target.hours : 8);
+                
+                if( !target.starttime ){
+                    target.starttime = currentTime.starttime;
+                }
+                
+                if( !target.endtime ){
+                    target.endtime = currentTime.endtime;
+                }
                 
                 if( target.hasOwnProperty("id") ){
                     hideMobileWidget(false,mainForm + "copy");    
