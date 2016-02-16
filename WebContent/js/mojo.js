@@ -719,7 +719,7 @@ createSession: function(args){
         var doFinally = function(fData){
             var proxyData = {};
             
-            if( data && data.status ){
+            if( data && 1 == data.status ){
                 proxyData.status = 1;
                 
                 if( !getCurrentContext().UIProfileManager.getSetting("debug") && fData.items && fData.items.length > 0 ){

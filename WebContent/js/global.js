@@ -1,6 +1,6 @@
 var API = {
 	appContext : '/time', 
-        messageContext : ':9990/time', 
+        messageContext : '/time', 
 	baseURL : '/time/', 
     imageURL : '/time/images/', 
     profileURL : 'conf/uiprofile.json',
@@ -93,7 +93,7 @@ function playSystemSound(soundFileName) {
         
         audioContainer = newDialog;
     }
-    var soundContent = "<embed src='/queryui/images/sounds/beep.wav' autostart='true' height='0' id='systemsoundbeep' enablejavascript='true' hidden='true'>";
+    var soundContent = "<embed src='/time/images/sounds/beep.wav' autostart='true' height='0' id='systemsoundbeep' enablejavascript='true' hidden='true'>";
     
     //dojo.attr(audioContainer,"innerHTML",soundContent);
     dojo.byId("audioContainer").innerHTML = soundContent;

@@ -247,7 +247,12 @@ zen.buildSlot = function(args,currentState){
 
     if( isValid ) {
         //result.response = zen.replaceTokens(args,slotValue.response[zen.random(slotValue.response.length)]);
-        result.response = zen.replaceTokens(args,slotValue.detail.responses[zen.random(slotValue.detail.responses.length)]);
+        if( slotValue.detail ) {
+            result.response = zen.replaceTokens(args,slotValue.detail.responses[zen.random(slotValue.detail.responses.length)]);
+        }
+        else {
+            result.response = getCurrentContext().UIProfileManager.getString("unknowInput");
+        }
         result.isComplete = true;
         result.previousState = args.currentState;
     }

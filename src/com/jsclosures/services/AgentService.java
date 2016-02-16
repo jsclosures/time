@@ -6,6 +6,8 @@ import com.jsclosures.RestService;
 import com.jsclosures.RestServiceStub;
 import com.jsclosures.SolrHelper;
 
+import java.net.URLEncoder;
+
 import java.util.ArrayList;
 
 import org.apache.solr.client.solrj.impl.CloudSolrClient;
@@ -108,26 +110,43 @@ public class AgentService implements RestImplService {
             queryArgs.setValue("sort","score desc");
             
             StringBuffer queryStr = new StringBuffer();
-            int interval = 20/qList.size();
+            int queryCount = qList.size()*2;
+            
+            int interval = 100/queryCount;
             int start = 0;
             StringBuffer runningQueryStr = new StringBuffer();
-            
+            StringBuffer phraseQueryStr = new StringBuffer();
+            String tQueryPrefix;
             for(int i = 0,size = qList.size();i < size;i++){
-                String tQueryPrefix = "q".concat(String.valueOf(i+1));
+                tQueryPrefix = "q".concat(String.valueOf(i+1));
                 String tTerm = qList.get(i);
                 if( i > 0 ){
                     queryStr.append(" OR ");
                     runningQueryStr.append(" AND ");
+                    phraseQueryStr.append(" ");
                 }
-                queryStr.append("_val_:{!scaled queryPrefix=\"" + tQueryPrefix + "\"}");
+                
                 runningQueryStr.append(tTerm);
+                phraseQueryStr.append(tTerm);
+                
+                queryStr.append("_val_:{!scaled queryPrefix=\"" + tQueryPrefix + "\"}");
                 queryArgs.setValue(tQueryPrefix.concat("q"),runningQueryStr.toString());
                 queryArgs.setValue(tQueryPrefix.concat("l"),start);
                 queryArgs.setValue(tQueryPrefix.concat("u"),start+interval);
                 queryArgs.setValue(tQueryPrefix.concat("df"),"grammars_zen");
                 
                 start += interval + 1;
+                
+                tQueryPrefix = "qp".concat(String.valueOf(i+1));
+                queryStr.append(" OR _val_:{!scaled queryPrefix=\"" + tQueryPrefix + "\"}");
+                queryArgs.setValue(tQueryPrefix.concat("q"),"%22".concat(phraseQueryStr.toString()).concat("%22"));
+                queryArgs.setValue(tQueryPrefix.concat("l"),start);
+                queryArgs.setValue(tQueryPrefix.concat("u"),start+interval);
+                queryArgs.setValue(tQueryPrefix.concat("df"),"grammars_zen");
+                
+                start += interval + 1;
             }
+            
             queryArgs.setValue("q",queryStr.toString());
             String resourceURL = SolrHelper.getDefaultDataSourceURL(context);
             int timeOut = 5000;

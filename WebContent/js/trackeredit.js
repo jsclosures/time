@@ -40,8 +40,8 @@ function internalBuildTrackerEditPage(mainContext, mainId) {
     var registeredWidgetList = new Array();
     var formFields = new Array();
     formFields.push({label: "name",name: "name","type": "TEXTFIELD"});
-    formFields.push({label: "job",name: "job","type": "COMBOFIELD",contentType: "JOB"});
-    formFields.push({label: "equipment",name: "equipment","type": "COMBOFIELD",contentType: "EQUIPMENT"});
+    formFields.push({label: "job",name: "job","type": "COMBOFIELD",contentType: "JOBFACET"});
+    formFields.push({label: "equipment",name: "equipment","type": "COMBOFIELD",contentType: "EQUIPMENTFACET"});
     formFields.push({label: "location",name: "location","type": "TEXTFIELD"});
     formFields.push({label: "comments",name: "comments","type": "TEXTFIELD"});
     formFields.push({label: "starttime",name: "starttime","type": "TEXTFIELD"});
@@ -157,7 +157,7 @@ function internalBuildTrackerEditPage(mainContext, mainId) {
                             
                             var sCallback = dojo.hitch(sContext,doLater);
                             
-                            getCurrentContext().CacheManager.getData({contenttype:tField.contentType,nocache:true,field: tField.name,callback: sCallback});
+                            getCurrentContext().CacheManager.getData({contenttype:tField.contentType,nocache:true,callback: sCallback});
                         }
                     }
                 }

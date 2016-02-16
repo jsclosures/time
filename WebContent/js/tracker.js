@@ -109,7 +109,7 @@ function internalBuildTrackerPage(mainContext, mainId) {
                     if( response.items ){
                         for(var i = 0;i < response.items.length;i++){
                             var item = response.items[i];
-                            var newItem = {id: item.id,name: item.name,equipment: item.equipment,location: item.location,comments: item.comments,starttime: item.starttime,endtime: item.endtime};
+                            var newItem = {id: item.id,name: item.name,job: item.job,equipment: item.equipment,location: item.location,comments: item.comments,starttime: item.starttime,endtime: item.endtime};
                             if( newItem.location ){
                                 var tloc = newItem.location.split(",");
                                 if( tloc.length > 1 ){

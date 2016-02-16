@@ -40,5 +40,4 @@
          "preloadObjects": [{"message" : "loadingVoiceEngine",
                             "href": "/time/conf/voice.html",
                             "requiredAgent": "any"}]
-         
 }

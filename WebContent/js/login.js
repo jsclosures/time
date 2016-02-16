@@ -111,20 +111,31 @@ function buildLoginPage(context){
                 if( cUser ){
                     loginInfo.login = cUser;
                     var tObj = dojo.byId(mainId + "login");
-                    tObj.innerHTML = "<input type='password'/>";
+                    tObj.className = "secure";
+                    
                     tObj = dojo.byId("login_label");
-                    tObj.innerHTML = profileManager.getString("userPassword");
+                    tObj.innerHTML = profileManager.getString("password");
+                    
                     tObj = dojo.byId(mainId + "loginbutton");
                     tObj.innerHTML = profileManager.getString("login");
+                    
+                    tObj = anyWidgetById("login_message");
+                    var message = profileManager.getString("loginMessage");
+                    message = message.replace("${1}",loginInfo.login);
+                    tObj.set("content",message);
                 }
                 else {
-                    var tObj = anyWidgetById(mainId + "login");
-                    tObj.set("value","");
-                    tObj.set("type","text");
-                    tObj = anyWidgetById("login_label");
+                    var tObj = dojo.byId(mainId + "login");
+                    tObj.className = "nonsecure";
+                    
+                    tObj = dojo.byId("login_label");
                     tObj.innerHTML = profileManager.getString("userName");
+                    
                     tObj = dojo.byId(mainId + "loginbutton");
                     tObj.innerHTML = profileManager.getString("next");
+                    
+                    tObj = anyWidgetById("login_message");
+                    tObj.set("content",profileManager.getString("welcomeMessage"));
                 }
         }
                 
@@ -157,7 +168,12 @@ function buildLoginPage(context){
                       {
                           id: mainId + "login",
                           name: mainId + "login",
-                          value: ""
+                          value: "",
+                          onInput: function(evt){
+                              if ( evt && evt.keyCode == dojo.keys.ENTER) {
+                                doLogin();
+                              }
+                          }
                       }
                   );
                registeredWidgetList.push(userField.id);   
@@ -221,12 +237,31 @@ function buildLoginPage(context){
 				   queryFrame.user = user;
 				   queryFrame.password = passwd;
                                    
+                                   anyWidgetById(mainId + "login").set("value","");
+                                   
                                    var sm = mojo.data.SessionManager.getInstance(queryFrame);
                                    
+                                   var localCallback = function(data){
+                                       
+                                       if( 1 == data.status ){
+                                          context.callback(data);
+                                       }
+                                       else {
+                                            getCurrentContext().setBusy(false,false);
+                                            if( localStorage )
+                                                localStorage.username=  "";
+                                            loginInfo = {};
+                                            
+                                            startChild();
+                                       }
+                                   }
                                    
-                                   sm.createSession({query: queryFrame,callback: context.callback});
+                                   sm.createSession({query: queryFrame,callback: localCallback});
 			  }
                           else {
+                             // if( localStorage )
+                             //   localStorage.username=  "";
+                            //loginInfo = {};
                               startChild();
                           }
         }

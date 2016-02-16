@@ -18,6 +18,7 @@ public class TrackerService extends SolrService {
     }
     public static String FIELDLIST[][] = {{"id","NUMBER"},
                                             {"name","STRING"},
+                                            {"job","STRING"},
                                             {"equipment","STRING"},
                                             {"comments","STRING"},
                                             {"location","STRING"},

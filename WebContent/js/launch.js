@@ -320,6 +320,8 @@ function internLaunchApplication(domConstruct,args) {
         }
         
         
+        getCurrentContext().logout = logout;
+        
         startApp();
     }
 }

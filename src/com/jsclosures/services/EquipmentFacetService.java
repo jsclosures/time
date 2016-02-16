@@ -82,8 +82,8 @@ public class EquipmentFacetService extends SolrService {
                     for(int i = 0,size = entryList.size();i < size;i++){
                         if( entryList.get(i).getInt("count") >= 1 ) {
                                 DataBean tmp = new DataBean();
-                                tmp.setValue("id",entryList.get(i).getString("title"));
-                                tmp.setValue("name",entryList.get(i).getString("title"));
+                                tmp.setValue("id",entryList.get(i).getString("name"));
+                                tmp.setValue("name",entryList.get(i).getString("name"));
                             
                                 resultList.add(tmp);
                         }

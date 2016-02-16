@@ -56,7 +56,11 @@
     "add": "Add",
     "delete": "Delete",
     "sequence": "Sequence",
-    "className": "Class Name"
+    "className": "Class Name",
+    "unknowInput": "I do not understand, tell me more",
+    "loginMessage": "Please login ${1}",
+    "next": "Next",
+    "home": "Home"
 },
 "help": {
     "login": "Please use your username and password to login.",

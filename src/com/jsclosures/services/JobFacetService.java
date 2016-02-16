@@ -58,7 +58,7 @@ public class JobFacetService extends SolrService {
         if( args.isValid("timeout") )
             timeOut = args.getInt("timeout");
         
-        String facetField = args.getString("field","name");
+        String facetField = args.getString("field","title");
         
         ModifiableSolrParams params = SolrHelper.getQueryParameters();
         params.set("rows","0");

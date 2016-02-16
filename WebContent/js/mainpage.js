@@ -74,6 +74,10 @@ function internalBuildMainPage(mainContext, mainId) {
                                             "onClick": onListClick};
                             
                             storeData.push(newItem);
+                            
+                            if( i == 0 ){
+                                zen.speakMessage(item.contenttitle + " " + item.contentbody);
+                            }
                         }
                     }
                     var newStore = new dojo.store.Memory({data:storeData, idProperty:"id",labelProperty: "label"});
