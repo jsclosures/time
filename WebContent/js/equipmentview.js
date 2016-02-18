@@ -13,10 +13,11 @@ function buildEquipmentViewPage(mainContext, mainId,currentChild) {
                     "dojox/mobile/ScrollableView",
                     "dojox/mobile/TabBar",
                     "dojox/mobile/TabBarButton",
-                    "dojo/data/ItemFileReadStore"
+                    "dojo/data/ItemFileReadStore",
+                    "dojox/gfx"
          ], 
          function(){
-        	 //console.log("building routingedit page");
+        	 //console.log("building Content page");
         	 
         	 internalBuildEquipmentViewPage(mainContext, mainId);
 			 
@@ -35,11 +36,11 @@ function internalBuildEquipmentViewPage(mainContext, mainId) {
     var mainForm = mainId + "form";
     var connectorList = new Array();
     var registeredWidgetList = new Array();
+    var maxBounds = false;
     var formFields = new Array();
-    formFields.push({label: "name",name: "name"});
-    formFields.push({label: "action",name: "action"});
-    formFields.push({label: "target",name: "target"});
-            
+    formFields.push({label: "title",name: "title"});
+    formFields.push({label: "comments",name: "comments"});
+   
     //console.log("content page context " + context + " in : " + mainId);
 
     if (context) {
@@ -59,95 +60,71 @@ function internalBuildEquipmentViewPage(mainContext, mainId) {
 
         context.resizeDisplay = function () {
             //console.log("resize Content page: ");
+		  
+         var cContext = getCurrentContext();
+		  
+		  var tObj = dojo.byId(mainForm);
 
         }
+
+        var surface = false;
         var started = false; 
-        context.startChild = function () {
-		//console.log("start content page");
-		if( !started ){
-                    buildMainPage({id: mainForm});
-                    started = true;
-                    if( target ){
-                        context.setTarget(target);
-                    }
-                }
-                
-        }
 
-        context.stopChild = function () {
-		//console.log("stop content page");
-		
-        }
-        
-        function onListClick(){
-            var item = this;
-            console.log(item.boardtitle);
-            getCurrentContext().setCurrentView("equipmentedit");
-            
-            var doLater = function(){
-                anyWidgetById("equipmentedit").setParent(anyWidgetById(mainId).getTarget());
-                anyWidgetById("equipmentedit").setTarget(item.actualRecord);
-            }
-            setTimeout(doLater,1000);
-        }
-        
-        var target = false;
-        context.reloadTarget = function () {
-            context.setTarget(target);
-        }
-        
-        context.setTarget = function (t) {
+        context.startChild = function () {
+                if( !started ){
+                    started = true;
+                    buildMainPage({id: mainForm});
+                    
+                }
+                
 		//console.log("start content page");
-                target = t;
-		console.log(target);
+                if( !surface ){
+                    var canvas = anyWidgetById(mainForm + "canvas");
+                    var dim = {width: 300,height: 300};
                 
-                var doLater = function(response){
-                   
-                    var storeData = new Array();
-                    
-                    if( response.items ){
-                        var uiManager = getCurrentContext().UIProfileManager;
-                        
-                        for(var i = 0;i < response.items.length;i++){
-                            var item = response.items[i];
-                            var newItem = {id: item.id,
-                                            label: item.id,
-                                            mode: item.mode,
-                                            action: item.action,
-                                            target: item.target,
-                                            required: item.required,
-                                            xsequence: item.sequence,
-                                            xclassName: item.className,
-                                            actualRecord: item,
-                                            "icon": "images/equipment.png", 
-                                            "rightText": uiManager.getString("edit"), 
-                                            "moveTo": "bar" ,
-                                            "onClick": onListClick};
-                            
-                            storeData.push(newItem);
-                        }
-                    }
-                    var newStore = new dojo.store.Memory({data:storeData, idProperty:"id",labelProperty: "label"});
-                    
-                    dijit.byId(mainForm + "itemlist").setStore(newStore);
+                    dojox.gfx.createSurface(mainForm + "canvas",dim.width,dim.height).whenLoaded(this, function(newSurface){
+                        setSurface(newSurface);
+                    });
                 }
-                getCurrentContext().CacheManager.getData({contenttype:"EQUIPMENT",nocache: true,parentid: target.id,callback: doLater});
-                
-                for(var i = 0;i < formFields.length;i++){
-                    var tField = formFields[i];
-                       
-                    var tObj = anyWidgetById(mainForm + tField.name);
-                    
-                    if( tObj ){
-                        tObj.set("value",target[tField.name]);
-                    }
-                }
-                
                 
         }
         
-        context.getTarget = function () {
+        
+        function setSurface(s){
+            surface = s;
+            var container = anyWidgetById(mainForm + "canvas");
+            
+            var sPos = dojo.position(container.domNode);
+            maxBounds = {x: sPos.w,y: sPos.h};
+            
+        }
+        
+
+        function loadEquipmentData(){
+            surface.clear();
+            
+            if( target && target.background ){
+                surface.createImage({x:0,y:0, width:360, height:240, src:target.background})
+            }
+            
+            
+        }
+        
+        context.stopChild = function () {
+		console.log("stop equipmentview page");
+        }
+        var target = false;
+        context.getTarget = function(){
             return( target );
+        }
+        context.setTarget = function (rec) {
+		console.log("start equipmentview page");
+                target = rec;
+		console.log("target: " + target);
+                
+                anyWidgetById(mainForm + "title").set("value",target.title);
+                anyWidgetById(mainForm + "comments").set("value",target.comments);
+                loadEquipmentData();
         }
 
         context.destroyChild = function () {
@@ -167,15 +144,15 @@ function internalBuildEquipmentViewPage(mainContext, mainId) {
     }
 
     function buildMainPage(context){
-            
+            var formId = context.id;
             var profileManager = getCurrentContext().UIProfileManager;
             
     
-                    var outerContainer = new dojox.mobile.ScrollableView({id: mainForm},dojo.byId(mainForm));
+                    var outerContainer = new dojox.mobile.ScrollableView({id: formId},dojo.byId(formId));
                     registeredWidgetList.push(outerContainer.id);
                     //outerContainer.startup();
                         
-                    var formContainer = new dojox.mobile.RoundRect({id: mainForm + "form"});
+                    var formContainer = new dojox.mobile.RoundRect({id: formId + "form"});
                     registeredWidgetList.push(formContainer.id);
                     
                     outerContainer.addChild(formContainer);
@@ -197,32 +174,15 @@ function internalBuildEquipmentViewPage(mainContext, mainId) {
                           
                         formContainer.addChild(newField);
                     }
-        
-            
-            
-            var controlContainer = new dojox.mobile.RoundRect({id: mainForm + "innercontrol"});
+
+            var controlContainer = new dojox.mobile.RoundRect({id: formId + "innercontrol"});
             registeredWidgetList.push(controlContainer.id);
             formContainer.addChild(controlContainer);
             
     
-            var addButton = new dojox.mobile.Button({
+            var saveButton = new dojox.mobile.Button({
                     label: "",
-                    name: mainForm + "add",
-                    innerHTML: profileManager.getString("add"),
-                    colspan: 1,
-                    showLabel: false,
-                    iconClass: "addIcon",
-                    onClick: function(){
-                        doAddAction();
-                    }
-            });
-            
-            registeredWidgetList.push(addButton.id);
-            controlContainer.addChild(addButton); 
-            
-            var deleteButton = new dojox.mobile.Button({
-                    label: "",
-                    name: mainForm + "delete",
+                    id: formId + "delete",
                     innerHTML: profileManager.getString("delete"),
                     colspan: 1,
                     showLabel: false,
@@ -232,12 +192,12 @@ function internalBuildEquipmentViewPage(mainContext, mainId) {
                     }
             });
             
-            registeredWidgetList.push(deleteButton.id);
-            controlContainer.addChild(deleteButton); 
+            registeredWidgetList.push(saveButton.id);
+            controlContainer.addChild(saveButton); 
             
             var cancelButton = new dojox.mobile.Button({
                     label: "",
-                    name: mainForm + "cancel",
+                    id: formId + "cancel",
                     innerHTML: profileManager.getString("cancel"),
                     colspan: 1,
                     showLabel: false,
@@ -250,63 +210,46 @@ function internalBuildEquipmentViewPage(mainContext, mainId) {
             registeredWidgetList.push(cancelButton.id);
             controlContainer.addChild(cancelButton); 
             
-            var storeData = [
-                    
-                ];
-                var newStore = new dojo.store.Memory({data:storeData, idProperty:"id",labelProperty: "label"});
-              var itemList = new dojox.mobile.EdgeToEdgeStoreList(
-                          {
-                              id: mainForm + "itemlist",
-                              name: mainForm + "itemlist",
-                              store: newStore
-                          }
-                      );
-                   registeredWidgetList.push(itemList.id);   
-              
-            formContainer.addChild(itemList);
-            itemList.startup();
-
+            
+            
+            var canvas = new dojox.mobile.ContentPane({id: formId + "canvas"});
+                    registeredWidgetList.push(canvas.id);
+                    formContainer.addChild(canvas);
             
                formContainer.startup();
                controlContainer.startup();
         
                 outerContainer.startup();
     
-            function doAddAction() {
-                     getCurrentContext().setCurrentView("equipmentedit");
-                     var doLater = function(){
-                        var t = anyWidgetById(mainId).getTarget();
-                        
-                         anyWidgetById("equipmentedit").setParent(t);
-                         anyWidgetById("equipmentedit").setTarget({});
-                     }
-                     
-                     setTimeout(doLater,1000);
-            }
-            
             function doDeleteAction() {
-                     var requestData = {contenttype: "EQUIPMENT",id: anyWidgetById(mainId).getTarget().id};
+                    var rec = anyWidgetById(mainId).getTarget();
+                    
+                    var requestData = {contenttype: "EQUIPMENT"};
+                     requestData.id = rec.id;
                      
                      console.log(requestData);
                      
                      var doLater = function(data){
-                        for(var i = 0;i < formFields.length;i++){
-                            var tField = formFields[i];
-                             anyWidgetById(mainForm + tField.name).set("value","");
-                         }
                          getCurrentContext().CacheManager.purgeType({contenttype: "EQUIPMENT"});
                          getCurrentContext().setCurrentView("equipment"); 
                      }
+                     
                      var tURL = getCurrentContext().UIProfileManager.getSetting("mojoStoreUrl");
                 
-                     getDataService(tURL, doLater)["delete"](false,requestData); 
+                     getDataService(tURL, doLater)['delete'](false,requestData);         
             }
             
             function doCancelAction() {
                      getCurrentContext().setCurrentView("equipment");           
             }
             
+        
+            
             
             return( outerContainer );
     }
 }
+
+
+
+

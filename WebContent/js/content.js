@@ -85,6 +85,13 @@ function internalBuildContentPage(mainContext, mainId) {
                     deregisterDijitWidget(registeredWidgetList[i]);
                 }
 	   }
+           
+        context.setTarget = function (target) {
+		//console.log("start content page");
+		console.log(target);
+                anyWidgetById(mainForm + "title").set("value",target.contenttitle);
+                anyWidgetById(mainForm + "body").set("value",target.contentbody);
+        }
 
         //console.log("added lifecycle handlers to content page context");
     }
@@ -141,7 +148,7 @@ function internalBuildContentPage(mainContext, mainId) {
             var loginButton = new dojox.mobile.Button({
                     label: "",
                     name: mainId + "action",
-                    innerHTML: profileManager.getString("submit"),
+                    innerHTML: profileManager.getString("return"),
                     colspan: 1,
                     showLabel: false,
                     iconClass: "loginIcon",

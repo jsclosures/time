@@ -63,6 +63,7 @@ public class TrackerFacetService extends SolrService {
         ModifiableSolrParams params = SolrHelper.getQueryParameters();
         params.set("rows","0");
         params.set("facet","true");
+        params.set("facet.sort","last_modified desc");
         params.set("facet.field",facetField);
         params.set("facet.mincount","1");
         params.set("q","contenttype:" + CONTENTTYPE);
@@ -74,7 +75,8 @@ public class TrackerFacetService extends SolrService {
         DataBean tCache = SolrHelper.querySolrFacet(server, params);
         context.writeLog(1,"Query: " + tCache.toString() + " error: " + tCache.getString("error"));
         result.setValue("resultcount", tCache.getString("numFound"));
-
+        SolrHelper.releaseServer(server);
+        
         ArrayList<DataBean> entryList = (ArrayList<DataBean>)tCache.getCollection("entrylist");
         if (entryList != null)
         {

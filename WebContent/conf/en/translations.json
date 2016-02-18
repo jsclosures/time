@@ -5,7 +5,7 @@
             "timeFormat": "H:m:s.S",
             "locale": "en_US", 
             "timeZone": "America/New_York",
-            "resultDateFormat": [{"label": "MM-dd-yy HH:mm:ss","value": "MM-dd-yy HH:mm:ss"},{"label": "MM-dd hh:mm a","value": "MM-dd hh:mm a"}]
+            "resultDateFormat": [{"label": "MM-dd-yy HH:mm","value": "MM-dd-yy HH:mm"},{"label": "MM-dd hh:mm a","value": "MM-dd hh:mm a"}]
 },
 "translation": {
     "applicationTitle": "Time.Capture.Club",
@@ -56,7 +56,11 @@
     "add": "Add",
     "delete": "Delete",
     "sequence": "Sequence",
-    "className": "Class Name"
+    "className": "Class Name",
+    "unknowInput": "I do not understand, tell me more",
+    "loginMessage": "Please login ${1}",
+    "next": "Next",
+    "home": "Home"
 },
 "help": {
     "login": "Please use your username and password to login.",

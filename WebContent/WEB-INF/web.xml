@@ -29,11 +29,6 @@
             <param-name>messageserver</param-name>
             <param-value>http://localhost/zen/cometd/</param-value>
         </init-param>
-        <init-param>
-            <description>contentmap</description>
-            <param-name>contentmap</param-name>
-            <param-value>TRACKER:com.jsclosures.services.TrackerService</param-value>
-        </init-param>
     </servlet>
     <servlet-mapping>
         <servlet-name>MainService</servlet-name>

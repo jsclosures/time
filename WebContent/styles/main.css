@@ -96,4 +96,17 @@ body
         background:url("../images/logo.png") top left no-repeat;
         position: relative;
 }
+.secure{
+-webkit-text-security: disc;
+-moz-text-security: disc;
+text-security: disc;
+}
+
+.nonsecure{
+-webkit-text-security: none;
+-moz-text-security: none;
+text-security: none;
+}
+
+
 

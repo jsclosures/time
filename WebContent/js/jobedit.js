@@ -38,7 +38,7 @@ function internalBuildJobEditPage(mainContext, mainId) {
     var connectorList = new Array();
     var registeredWidgetList = new Array();
     var formFields = new Array();
-    formFields.push({label: "name",name: "name","type": "TEXTFIELD"});
+    formFields.push({label: "title",name: "title","type": "TEXTFIELD"});
     formFields.push({label: "comments",name: "comments","type": "TEXTFIELD"});
     //console.log("content page context " + context + " in : " + mainId);
 
@@ -72,6 +72,8 @@ function internalBuildJobEditPage(mainContext, mainId) {
                     buildMainPage({id: mainForm});
                     started = true;
                 }
+                
+                getCurrentContext().purgeNextActions();
         }
 
         context.stopChild = function () {
@@ -119,21 +121,6 @@ function internalBuildJobEditPage(mainContext, mainId) {
                     
                     if( tObj ){
                         tObj.set("value",target[tField.name] ? target[tField.name] : "");
-                        
-                        if( tField.type != 'DATEFIELD' ){
-                        
-                            var sContext = {widgetId: tObj.id};
-                            
-                            var doLater = function(sData){
-                                var tsData = new dojo.store.Memory({ idProperty: "name", data: sData.items});
-                                                                                            
-                                dijit.byId(this.widgetId).set("store",tsData);
-                            }
-                            
-                            var sCallback = dojo.hitch(sContext,doLater);
-                            
-                            getCurrentContext().CacheManager.getData({contenttype:"JOBFACET",nocache:true,field: tField.name,callback: sCallback});
-                        }
                     }
                 }
                 

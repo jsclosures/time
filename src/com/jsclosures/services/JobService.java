@@ -16,7 +16,7 @@ public class JobService extends SolrService {
         setFieldList(FIELDLIST);
     }
     public static String FIELDLIST[][] = {{"id","NUMBER"},
-                                            {"name","STRING"},
+                                            {"title","STRING"},
                                             {"comments","STRING"},
                                             {"username","STRING"},
                                             {"contenttype","STRING"},

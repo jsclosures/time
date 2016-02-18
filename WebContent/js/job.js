@@ -14,7 +14,6 @@ function buildJobPage(mainContext, mainId,currentChild) {
                     "dojox/mobile/TabBar",
                     "dojox/mobile/TabBarButton",
                     "dojo/data/ItemFileReadStore",
-                    "js/jobedit.js",
                     "js/jobview.js"
          ], 
          function(){
@@ -66,13 +65,13 @@ function internalBuildJobPage(mainContext, mainId) {
         }
         function onListClick(){
             var item = this;
-            console.log(item.actualRecord.jobtitle);
-            getCurrentContext().setCurrentView("jobview");
-            
+            console.log(item.actualRecord.title);
+
             var doLater = function(){
-                anyWidgetById("jobview").setTarget(item.actualRecord);
+                anyWidgetById("jobedit").setTarget(item.actualRecord);
             }
-            setTimeout(doLater,1000);
+            
+            getCurrentContext().setCurrentView("jobedit",[doLater]);  
         }
         var started = false;
         
@@ -97,10 +96,10 @@ function internalBuildJobPage(mainContext, mainId) {
                         for(var i = 0;i < response.items.length;i++){
                             var item = response.items[i];
                             var newItem = {id: item.id,
-                            label: item.jobtitle,
+                            label: item.title,
                             actualRecord: item,
                             "icon": "images/job.png", 
-                            "rightText": uiManager.getString("join"), 
+                            "rightText": uiManager.getString("edit"), 
                             "moveTo": "bar" ,
                             "onClick": onListClick};
                             
@@ -205,14 +204,13 @@ function internalBuildJobPage(mainContext, mainId) {
                 outerContainer.startup();
     
             function doAction() {
-                     getCurrentContext().setCurrentView("jobedit"); 
-                     
-                     
+ 
                      var doLater = function(){
                          anyWidgetById("jobedit").setTarget({});
                      }
                      
-                     setTimeout(doLater,1000);
+                     getCurrentContext().setCurrentView("jobedit",[doLater]); 
+                     
             }
             
             

@@ -68,7 +68,8 @@ public class AuthService implements RestImplService {
         DataBean tCache = SolrHelper.querySolr(server, params, FIELDLIST);
         context.writeLog(1,"Query: " + tCache.toString() + " error: " + tCache.getString("error"));
         result.setValue("resultcount", tCache.getString("numFound"));
-
+        SolrHelper.releaseServer(server);
+        
         ArrayList entryList = tCache.getCollection("entrylist");
         if (entryList != null)
         {
@@ -125,7 +126,7 @@ public class AuthService implements RestImplService {
         DataBean solrAttributeResult = SolrHelper.addDocumentsToSolr(solrServer,FIELDLIST,resultList);
         //SolrHelper.commitToSolr(solrServer);
         //SolrHelper.optimizeToSolr(solrServer);
-        
+        SolrHelper.releaseServer(solrServer);
         context.writeLog(1,"solr insert attribute result: " + solrAttributeResult.getString("error"));
         
         result.setValue("message","solr insert attribute result: " + solrAttributeResult.getString("error"));

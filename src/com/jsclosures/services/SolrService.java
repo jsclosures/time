@@ -32,7 +32,7 @@ public class SolrService implements RestImplService {
     private String contentType = "CONTENT";
     private String contentTypePrefix = "CT";
     private boolean hasParent = false;
-    private String sortOn = "";
+    private String sortOn = "last_modified desc";
     
     public void setHasParent(boolean hasParent){
         this.hasParent = hasParent;
@@ -72,6 +72,10 @@ public class SolrService implements RestImplService {
         
         DataBean solrArgs = SolrHelper.getDefaultArguments(context);
         
+        if( args.isValid("sort") ){
+            solrArgs.setValue("sort",args.getValue("sort"));
+        }
+        
         args.setValue("contenttype",contentType);
         
         HttpServletRequest req = (HttpServletRequest)args.getObject("request");
@@ -102,7 +106,8 @@ public class SolrService implements RestImplService {
         DataBean tCache = SolrHelper.querySolr(server, params, fieldList);
         context.writeLog(1,"Query: " + tCache.toString() + " error: " + tCache.getString("error"));
         result.setValue("resultcount", tCache.getString("numFound"));
-
+        SolrHelper.releaseServer(server);
+        
         ArrayList entryList = tCache.getCollection("entrylist");
         if (entryList != null)
         {
@@ -177,7 +182,7 @@ public class SolrService implements RestImplService {
         for(int i = 0;i < fieldList.length;i++)
         {
             if( fieldList[i][0].equalsIgnoreCase("id") ){
-                solrTmp.setValue("id",SolrHelper.hashIDWithPrefix(contentTypePrefix)); 
+                solrTmp.setValue("id",args.getString("id",SolrHelper.hashIDWithPrefix(contentTypePrefix))); 
             }
             else if( fieldList[i][0].equalsIgnoreCase("contenttype") ){
                 solrTmp.setValue("contenttype",contentType); 
@@ -192,7 +197,11 @@ public class SolrService implements RestImplService {
                 solrTmp.setValue(fieldList[i][0],encodeFieldValue("STRUCTURE",Helper.toJson(args.getStructure(fieldList[i][0])))); 
             }
             else {
-                solrTmp.setValue(fieldList[i][0],args.getString(fieldList[i][0]));  
+                if( args.getCollection(fieldList[i][0]) != null ){
+                    solrTmp.setCollection(fieldList[i][0],args.getCollection(fieldList[i][0]));  
+                }
+                else
+                    solrTmp.setValue(fieldList[i][0],args.getString(fieldList[i][0]));  
             }
         }
 
@@ -203,6 +212,7 @@ public class SolrService implements RestImplService {
         DataBean solrAttributeResult = SolrHelper.addDocumentsToSolr(solrServer,fieldList,resultList);
         //SolrHelper.commitToSolr(solrServer);
         //SolrHelper.optimizeToSolr(solrServer);
+        SolrHelper.releaseServer(solrServer);
         
         context.writeLog(1,"solr insert attribute result: " + solrAttributeResult.getString("error"));
         
@@ -243,9 +253,13 @@ public class SolrService implements RestImplService {
         context.writeLog(1,"solr update document id: " + args.getValue("id"));
         
         DataBean solrTmp = new DataBean();
+        
         for(int i = 0;i < fieldList.length;i++)
         {
-            if( fieldList[i][0].equalsIgnoreCase("contenttype") ){
+            if( fieldList[i][0].equalsIgnoreCase("id") ){
+                solrTmp.setValue("id",args.getString("id",SolrHelper.hashIDWithPrefix(contentTypePrefix))); 
+            }
+            else if( fieldList[i][0].equalsIgnoreCase("contenttype") ){
                 solrTmp.setValue("contenttype",contentType); 
             }
             else if( fieldList[i][0].equalsIgnoreCase("last_modified") ){
@@ -258,7 +272,11 @@ public class SolrService implements RestImplService {
                 solrTmp.setValue(fieldList[i][0],encodeFieldValue("STRUCTURE",Helper.toJson(args.getStructure(fieldList[i][0])))); 
             }
             else {
-                solrTmp.setValue(fieldList[i][0],args.getString(fieldList[i][0]));  
+                if( args.getCollection(fieldList[i][0]) != null ){
+                    solrTmp.setCollection(fieldList[i][0],args.getCollection(fieldList[i][0]));  
+                }
+                else
+                    solrTmp.setValue(fieldList[i][0],args.getString(fieldList[i][0]));  
             }
         }
 
@@ -271,6 +289,7 @@ public class SolrService implements RestImplService {
         solrAttributeResult = SolrHelper.addDocumentsToSolr(solrServer,fieldList,resultList);
         //SolrHelper.commitToSolr(solrServer);
         //SolrHelper.optimizeToSolr(solrServer);
+        SolrHelper.releaseServer(solrServer);
         
         context.writeLog(1,"solr update result: " + solrAttributeResult.getString("error"));
         
@@ -333,7 +352,8 @@ public class SolrService implements RestImplService {
         }
         //SolrHelper.commitToSolr(solrServer);
        // SolrHelper.optimizeToSolr(solrServer);
-        
+       SolrHelper.releaseServer(solrServer);
+       
         context.writeLog(1,"solr delete attribute result: " + solrAttributeResult.getString("error"));
         
         result.setValue("message","solr delete attribute result: " + solrAttributeResult.getString("error"));

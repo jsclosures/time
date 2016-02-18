@@ -59,9 +59,11 @@ function internalBuildAuthPage(mainContext, mainId) {
         context.startChild = function () {
 		console.log("start login page");
 		if( !started ){
-                    buildLoginPage({id: loginForm});
+                    buildLoginPage(context,{id: loginForm});
                     started = true;
                 }
+                var cUser = localStorage ? localStorage.username : "";
+                anyWidgetById(loginForm + "login").set("value",cUser);
         }
 
         context.stopChild = function () {
@@ -83,6 +85,7 @@ function buildLoginPage(context){
         
         var connectorList = new Array();
 	var registeredWidgetList = new Array();
+        var loginInfo = {};
         
         var destroyChild = function () {
                 //console.log("destroy login page");
@@ -97,13 +100,49 @@ function buildLoginPage(context){
                     deregisterDijitWidget(registeredWidgetList[i]);
                 }
         }
+        
+        var startChild = function () {
+		console.log("start login page");
+                var cUser = loginInfo.login;
+                if( !cUser ){
+                    cUser = localStorage ? localStorage.username : "";
+                }
+                
+                if( cUser ){
+                    loginInfo.login = cUser;
+                    var tObj = dojo.byId(mainId + "login");
+                    tObj.className = "secure";
+                    
+                    tObj = dojo.byId("login_label");
+                    tObj.innerHTML = profileManager.getString("password");
+                    
+                    tObj = dojo.byId(mainId + "loginbutton");
+                    tObj.innerHTML = profileManager.getString("login");
+                    
+                    tObj = anyWidgetById("login_message");
+                    var message = profileManager.getString("loginMessage");
+                    message = message.replace("${1}",loginInfo.login);
+                    tObj.set("content",message);
+                }
+                else {
+                    var tObj = dojo.byId(mainId + "login");
+                    tObj.className = "nonsecure";
+                    
+                    tObj = dojo.byId("login_label");
+                    tObj.innerHTML = profileManager.getString("userName");
+                    
+                    tObj = dojo.byId(mainId + "loginbutton");
+                    tObj.innerHTML = profileManager.getString("next");
+                    
+                    tObj = anyWidgetById("login_message");
+                    tObj.set("content",profileManager.getString("welcomeMessage"));
+                }
+        }
                 
         var result = {destroyChild: destroyChild};
 
 		var outerContainer = new dojox.mobile.Container({id: mainId},dojo.byId(mainId));
 		registeredWidgetList.push(outerContainer.id);
-                //outerContainer.startup();
-
                 result.container = outerContainer;
                 
     
@@ -113,40 +152,23 @@ function buildLoginPage(context){
 		
 		var formContainer = new dojox.mobile.RoundRect({id: "login_form"});
 		registeredWidgetList.push(formContainer.id);
-                //formContainer.startup();
                 
 		outerContainer.addChild(formContainer);
 	   
-	     var titleMessage = new dojox.mobile.ContentPane({id: "login_message",content: profileManager.getString("welcomeMessage")});
+                var titleMessage = new dojox.mobile.ContentPane({id: "login_message",content: profileManager.getString("welcomeMessage")});
 		registeredWidgetList.push(titleMessage.id);
                 formContainer.addChild(titleMessage);
+                
                 
                 var label = new dojox.mobile.ContentPane({id: "login_label",content: profileManager.getString("userName")});
 		registeredWidgetList.push(label.id);
 		formContainer.addChild(label);
-          var cUser = localStorage ? localStorage.username : "";
-          
-          var userField = new dojox.mobile.TextBox(
+                
+                var userField = new dojox.mobile.TextBox(
                       {
                           id: mainId + "login",
                           name: mainId + "login",
-                          value: cUser
-                      }
-                  );
-               registeredWidgetList.push(userField.id);   
-          
-        formContainer.addChild(userField);
-        
-        
-        var label = new dojox.mobile.ContentPane({id: "password_label",content: profileManager.getString("password")});
-        registeredWidgetList.push(label.id);
-        formContainer.addChild(label);
-  
-        var passwordField = new dojox.mobile.TextBox(
-                      {
-                          id: mainId + "password",
-                          name: mainId + "password",
-                          type: 'password',
+                          value: "",
                           onInput: function(evt){
                               if ( evt && evt.keyCode == dojo.keys.ENTER) {
                                 doLogin();
@@ -154,20 +176,19 @@ function buildLoginPage(context){
                           }
                       }
                   );
-        
-        registeredWidgetList.push(passwordField.id);
-        
-        formContainer.addChild(passwordField);
-        
-        
-        var controlContainer = new dojox.mobile.RoundRect({id: "loginapp-innercontrol"});
+               registeredWidgetList.push(userField.id);   
+          
+                formContainer.addChild(userField);
+                
+                var controlContainer = new dojox.mobile.RoundRect({id: "loginapp-innercontrol"});
         registeredWidgetList.push(controlContainer.id);
         formContainer.addChild(controlContainer);
         
 
         var loginButton = new dojox.mobile.Button({
                 label: "",
-                name: mainId + "LoginButton",
+                id: mainId + "loginbutton",
+                name: mainId + "loginbutton",
                 innerHTML: profileManager.getString("login"),
                 colspan: 1,
                 showLabel: false,
@@ -179,60 +200,33 @@ function buildLoginPage(context){
         
         registeredWidgetList.push(loginButton.id);
         controlContainer.addChild(loginButton); 
-        
-        var storeData =   {
-            identifier: 'value',
-            label: 'label',
-            items: profileManager.getSetting("language")
-        };
-                                            
-        var store = new dojo.data.ItemFileReadStore({
-            data: storeData
-        });
-        var cLanguage = profileManager.getSetting("currentLanguage");
            
-        /*var languageField = new dojox.mobile.ComboBox({
-                                                         id : "language", 
-                                                         name : "language", 
-                                                         label : profileManager.getString("language"), 
-                                                         colspan: 1,
-                                                         store : store, 
-                                                         value: cLanguage,
-                                                         searchAttr : "label", 
-                                                         style: "padding-left: 10px;",
-                                                         width:  "", 
-                                                         onChange: function(evt){
-                                                               var tLangObj = dijit.byId("language");
-                                   
-                                                               if( tLangObj ){
-                                                                   var tLang = tLangObj.get("value");
-                                                                   context.languageChangeCallback({language: tLang});
-                                                               }
-                                                         }
-                                                    });
-                                                    
-           registeredWidgetList.push(languageField.id);
-           controlContainer.addChild(languageField); */
-	
-           formContainer.startup();
-	   controlContainer.startup();
-	   
            var footerWrapper = new dojox.mobile.RoundRect({id: "login_footer_wrapper"});
 	   registeredWidgetList.push(footerWrapper.id);
 	   outerContainer.addChild(footerWrapper);
-           
+ 
 	   var footer = new dojox.mobile.ContentPane({id: "login_footer",content: "<a href=\"JavaScript:void(0)\" onClick=\"showHelpDialog(getCurrentContext().UIProfileManager.getHelp('login'));\">" + profileManager.getString("help") + "</a> | " + profileManager.getString("copyright")});
 	   registeredWidgetList.push(footer.id);
 	   footerWrapper.addChild(footer);
 	   footerWrapper.startup();
            
-            outerContainer.startup();
+           formContainer.startup();
+	   controlContainer.startup();
+	   outerContainer.startup();
 
         function doLogin() {
 			  var queryFrame = {};
-			   var user = dijit.byId(mainId + 'login').get('value');
-			   var passwd = dijit.byId(mainId + 'password').get('value');
+			   var user = loginInfo.login;
+                           
+			   var passwd = null;
 			   
+                           if( user && !passwd ){
+                               passwd = anyWidgetById(mainId + "login").get("value");
+                           }
+                           else {
+                               loginInfo.login = anyWidgetById(mainId + "login").get("value");
+                               anyWidgetById(mainId + "login").set("value","");
+                           }
            
 			   if( user != null && user.length > 0 
 						&& passwd != null && passwd.length > 0)
@@ -243,13 +237,36 @@ function buildLoginPage(context){
 				   queryFrame.user = user;
 				   queryFrame.password = passwd;
                                    
+                                   anyWidgetById(mainId + "login").set("value","");
+                                   
                                    var sm = mojo.data.SessionManager.getInstance(queryFrame);
                                    
+                                   var localCallback = function(data){
+                                       
+                                       if( 1 == data.status ){
+                                          context.callback(data);
+                                       }
+                                       else {
+                                            getCurrentContext().setBusy(false,false);
+                                            if( localStorage )
+                                                localStorage.username=  "";
+                                            loginInfo = {};
+                                            
+                                            startChild();
+                                       }
+                                   }
                                    
-                                   sm.createSession({query: queryFrame,callback: context.callback});
+                                   sm.createSession({query: queryFrame,callback: localCallback});
 			  }
+                          else {
+                             // if( localStorage )
+                             //   localStorage.username=  "";
+                            //loginInfo = {};
+                              startChild();
+                          }
         }
         
+        startChild();
         
         return( result );
 }

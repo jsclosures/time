@@ -13,14 +13,18 @@ var globalAppPadY = 74;
  */
  function launchApplication(args) {
     require(["dojo/dom-construct",
-                    "js/login.js",
+                                                                    "js/mojo.js",
+						"js/uihelper.js","js/login.js",
                     "js/mainpage.js",
                     "js/content.js",
                     "js/zen.js",
                     "js/mainapp.js",
                     "js/equipment.js",
                     "js/tracker.js",
+                    "js/trackeredit.js",
                     "js/job.js",
+                    "js/jobedit.js",
+                    "js/equipmentedit.js",
                     "lib/mespeak.js"],
     
     function(domConstruct){
@@ -315,6 +319,8 @@ function internLaunchApplication(domConstruct,args) {
             sm.deleteSession({callback: doLater});
         }
         
+        
+        getCurrentContext().logout = logout;
         
         startApp();
     }

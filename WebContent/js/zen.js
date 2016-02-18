@@ -150,6 +150,46 @@ zen.replaceTokens = function(args,responseText){
         result = zen.replaceAll(result,"@QUERY:" + query,"searching...");
     }
     
+    if( result.indexOf("@ACTION") > -1 ){
+        //post a message to results view to do a query
+        var idx = result.indexOf("@ACTION");
+        var endIndex = result.indexOf(" ",idx+1);
+        if( endIndex < 1 )
+            endIndex = result.length;
+        
+        var action = result.substring(idx + "@ACTION:".length,endIndex);
+        
+        var doLater = function(){
+            console.log("action: " + action);
+            var i = action.indexOf(":");
+            
+            var a = i > 0 ? action.substring(0,i) : action;
+            
+            if( i < action.length ){
+                var p = action.substring(i+1);
+                var pi = p.indexOf(":");
+                
+                if( pi > 0 ){
+                    var viewName = p.substring(0,pi);
+                    var t = p.substring(pi+1);
+                    var target = {};
+                    target[t] = args.currentState ? args.currentState[t] : "";
+                    var doLater = function(){
+                        anyWidgetById(viewName).setTarget(target);
+                    }
+                    getCurrentContext().setCurrentView(viewName,[doLater]);
+                }
+                else
+                    getCurrentContext()[a](p);
+            }
+            else
+                getCurrentContext()[a]();
+        }
+        setTimeout(doLater,2000);
+        
+        result = zen.replaceAll(result,"@ACTION:" + action,"launching...");
+    }
+    
     return( result );
 }
 
@@ -207,7 +247,12 @@ zen.buildSlot = function(args,currentState){
 
     if( isValid ) {
         //result.response = zen.replaceTokens(args,slotValue.response[zen.random(slotValue.response.length)]);
-        result.response = zen.replaceTokens(args,slotValue.detail.responses[zen.random(slotValue.detail.responses.length)]);
+        if( slotValue.detail ) {
+            result.response = zen.replaceTokens(args,slotValue.detail.responses[zen.random(slotValue.detail.responses.length)]);
+        }
+        else {
+            result.response = getCurrentContext().UIProfileManager.getString("unknowInput");
+        }
         result.isComplete = true;
         result.previousState = args.currentState;
     }

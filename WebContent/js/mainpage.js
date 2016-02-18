@@ -38,6 +38,19 @@ function internalBuildMainPage(mainContext, mainId) {
     console.log("Main page context " + context + " in : " + mainId);
 
     if (context) {
+        function onListClick(){
+            var item = this;
+            var target = item.actualRecord;
+            console.log(target.contenttitle);
+            
+            getCurrentContext().setCurrentView("content");
+            
+            var doLater = function(){
+                anyWidgetById("content").setTarget(item.actualRecord);
+            }
+            getCurrentContext().setCurrentView("content", [doLater]);
+        }
+        
         context.loadQuery = function(data){
                 
                 console.log(data);
@@ -61,6 +74,10 @@ function internalBuildMainPage(mainContext, mainId) {
                                             "onClick": onListClick};
                             
                             storeData.push(newItem);
+                            
+                            if( i == 0 ){
+                                zen.speakMessage(item.contenttitle + " " + item.contentbody);
+                            }
                         }
                     }
                     var newStore = new dojo.store.Memory({data:storeData, idProperty:"id",labelProperty: "label"});

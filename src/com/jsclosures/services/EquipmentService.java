@@ -16,8 +16,9 @@ public class EquipmentService extends SolrService {
         setFieldList(FIELDLIST);
     }
     public static String FIELDLIST[][] = {{"id","NUMBER"},
-                                            {"name","STRING"},
+                                            {"title","STRING"},
                                             {"comments","STRING"},
+                                            {"background","STRING"},
                                             {"username","STRING"},
                                             {"contentowner","STRING"},
                                             {"contenttype","STRING"},

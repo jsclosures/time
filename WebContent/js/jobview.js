@@ -36,7 +36,7 @@ function internalBuildJobViewPage(mainContext, mainId) {
     var connectorList = new Array();
     var registeredWidgetList = new Array();
     var formFields = new Array();
-    formFields.push({label: "name",name: "name"});
+    formFields.push({label: "title",name: "title"});
     formFields.push({label: "comments",name: "comments"});
             
     //console.log("content page context " + context + " in : " + mainId);

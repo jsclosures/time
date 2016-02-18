@@ -40,7 +40,8 @@ function internalBuildTrackerEditPage(mainContext, mainId) {
     var registeredWidgetList = new Array();
     var formFields = new Array();
     formFields.push({label: "name",name: "name","type": "TEXTFIELD"});
-    formFields.push({label: "equipment",name: "equipment","type": "COMBOFIELD",contentType: "EQUIPMENT"});
+    formFields.push({label: "job",name: "job","type": "COMBOFIELD",contentType: "JOBFACET"});
+    formFields.push({label: "equipment",name: "equipment","type": "COMBOFIELD",contentType: "EQUIPMENTFACET"});
     formFields.push({label: "location",name: "location","type": "TEXTFIELD"});
     formFields.push({label: "comments",name: "comments","type": "TEXTFIELD"});
     formFields.push({label: "starttime",name: "starttime","type": "TEXTFIELD"});
@@ -78,6 +79,7 @@ function internalBuildTrackerEditPage(mainContext, mainId) {
                     buildMainPage({id: mainForm});
                     started = true;
                 }
+                getCurrentContext().purgeNextActions();
         }
 
         context.stopChild = function () {
@@ -111,6 +113,23 @@ function internalBuildTrackerEditPage(mainContext, mainId) {
 		//console.log("start content page");
 		console.log(target);
                 
+                if( !target.location ){
+                    var pos = getCurrentContext().GeoLocation.position.coords;
+                    
+                    target.location =  pos.latitude + "," + pos.longitude;
+                    target.latitude = pos.latitude;
+                    target.longitude = pos.longitude;
+                }
+                var currentTime = getCurrentContext().UIProfileManager.getCurrentTime(target.hours ? target.hours : 8);
+                
+                if( !target.starttime ){
+                    target.starttime = currentTime.starttime;
+                }
+                
+                if( !target.endtime ){
+                    target.endtime = currentTime.endtime;
+                }
+                
                 if( target.hasOwnProperty("id") ){
                     hideMobileWidget(false,mainForm + "copy");    
                 }
@@ -138,7 +157,7 @@ function internalBuildTrackerEditPage(mainContext, mainId) {
                             
                             var sCallback = dojo.hitch(sContext,doLater);
                             
-                            getCurrentContext().CacheManager.getData({contenttype:tField.contentType,nocache:true,field: tField.name,callback: sCallback});
+                            getCurrentContext().CacheManager.getData({contenttype:tField.contentType,nocache:true,callback: sCallback});
                         }
                     }
                 }
