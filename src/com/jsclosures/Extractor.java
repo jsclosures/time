@@ -50,13 +50,14 @@ terms_VB Verb, base form
 terms_VBD Verb, past tense
 terms_VBG Verb, gerund or present participle
 terms_VBN Verb, past participle
-terms_VBP Verb, non­3rd person singular present
+terms_VBP Verb, nonï¿½3rd person singular present
 terms_VBZ Verb, 3rd person singular present
-terms_WDT Wh­determiner
-terms_WP Wh­pronoun
-terms_WP$ Possessive wh­pronoun
-terms_WRB Wh­adverb
+terms_WDT Wh determiner
+terms_WP Wh pronoun
+terms_WP$ Possessive wh pronoun
+terms_WRB Wh adverb
  */
+
 public class Extractor {
     public Extractor() {
         super();
