@@ -81,8 +81,20 @@ public class SignUpService implements RestImplService {
                 solrTmp.setValue("username",args.getString("username"));  
                 solrTmp.setValue("useralias",args.getString("useralias"));  
                 solrTmp.setValue("useremail",args.getString("useremail"));  
-                solrTmp.setValue("userkey",Helper.hashUserKey(args.getString("userkey")));  
-                solrTmp.setValue("contentowner",args.getString("contentowner","zen"));  
+                solrTmp.setValue("userkey",Helper.hashUserKey(args.getString("userkey"))); 
+                
+                String contentOwner;
+                
+                if( queryArgs.isValid("groupkey") ){
+                    contentOwner = queryArgs.getString("groupkey");
+                }
+                else if( queryArgs.isValid("usergroup") ) {
+                    contentOwner = Helper.hashUserKey(queryArgs.getString("usergroup"));
+                }
+                else {
+                    contentOwner = "zen";
+                }
+                solrTmp.setValue("contentowner",contentOwner);  
                 
                 solrTmp.setValue("last_modified",SolrHelper.getTimestamp()); 
         

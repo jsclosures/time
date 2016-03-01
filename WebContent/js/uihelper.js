@@ -1489,23 +1489,35 @@ function buildMobileApplicationHeader(context)
 	var toolbarId = context.toolbar;
         
 	//console.log("adding header to " + context.headerDivName);
-	var tHeader = new dojox.mobile.Heading({id: context.headerDivName},context.headerDivName);
+	var tHeader = new dojox.mobile.Heading({id: context.headerDivName,label: cContext.UIProfileManager.getString("initialSearch")},context.headerDivName);
         registeredWidgetList.push(tHeader.id);
+        
+        //var initialMessage = cContext.UIProfileManager.getString("initialSearch");
+                    
+        
+                    //var label = new dojox.mobile.ContentPane({id: "apptitle",content: initialMessage});
+                    //registeredWidgetList.push(label.id);
+                    //tHeader.addChild(label);
+                    
+                    //zen.speakMessage(initialMessage);
+                
+    
+              
         
 	/*var tTitle = new dojox.mobile.ToolBarButton({id: "apptitle",
                                                         label: cContext.UIProfileManager.getString("pleaseWait"),
                                                         onClick: function(evt){
                                                             setCurrentView("main");
                                                         }});*/
-        var tTitle = new dojox.mobile.ToolBarButton({id: "apptitle",
+        /*var tTitle = new dojox.mobile.ToolBarButton({id: "apptitle",
                                                         label: cContext.UIProfileManager.getString("pleaseWait"),
                                                         onClick: function(evt){
                                                             showHelpDialog(getCurrentContext().UIProfileManager.getString('applicationAbout'));
                                                         }});
 	registeredWidgetList.push(tTitle.id);
-	tHeader.addChild(tTitle);
+	tHeader.addChild(tTitle);*/
         
-        var tAction = new dojox.mobile.ToolBarButton({id: "appviewselector",
+        /*var tAction = new dojox.mobile.ToolBarButton({id: "appviewselector",
                                                         label: cContext.UIProfileManager.getString("home"),
                                                         onClick: function(evt){
                                                                 var cView = getCurrentView();
@@ -1517,7 +1529,7 @@ function buildMobileApplicationHeader(context)
                                         
                                                         }});
 	registeredWidgetList.push(tAction.id);
-	tHeader.addChild(tAction);
+	tHeader.addChild(tAction);*/
         
         
         if( cContext.UIProfileManager.getSetting("showLogout") ){
@@ -1525,6 +1537,8 @@ function buildMobileApplicationHeader(context)
                 id: logoutId,
                 label: cContext.UIProfileManager.getString("logout"),
                 iconClass:"logoutIcon",
+                arrow: "left",
+                transition: "slide",
                 onClick: function(){ 
                     if( context.callback ){
                         context.callback();
@@ -1535,6 +1549,20 @@ function buildMobileApplicationHeader(context)
             tHeader.addChild(actionMenuLogout);
             registeredWidgetList.push(actionMenuLogout.id);
         }
+        
+        var actionHome = new dojox.mobile.ToolBarButton({
+                id: "ZEN",
+                label: cContext.UIProfileManager.getString("ZEN"),
+                iconClass:"logoutIcon",
+                arrow: "right",
+                transition: "slide",
+                onClick: function(){ 
+                    setCurrentView("main");
+                }
+            });
+            
+            tHeader.addChild(actionHome);
+            registeredWidgetList.push(actionHome.id);
 
 	tHeader.startup();
         //add lifecycyle methods

@@ -147,7 +147,7 @@ zen.replaceTokens = function(args,responseText){
         
         getCurrentContext().notifyDataChange(data);
         
-        result = zen.replaceAll(result,"@QUERY:" + query,"searching...");
+        result = zen.replaceAll(result,"@QUERY:" + query,"searching for " + query);
     }
     
     if( result.indexOf("@ACTION") > -1 ){

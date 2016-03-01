@@ -1,0 +1,658 @@
+turn grammar.json into solr structure
+
+WHO, WHAT, WHEN, WHERE, WHY, HOW
+
+{"id": "1",
+"contenttype" :"GRAMMAR",
+"sentencetype" :"QUESTION.WHO",
+"action" :"PUT",
+"condition" :"contains",
+"grammars" :["who are"]
+}
+
+{"id": "2",
+"contenttype" :"GRAMMAR",
+"sentencetype" :"QUESTION.WHO",
+"action" :"PUT",
+"condition" :"contains",
+"grammars" :["who are you"]
+}
+
+{"id": "3",
+"contenttype" :"GRAMMAR",
+"sentencetype" :"QUESTION.WHO",
+"action" :"PUT",
+"condition" :"contains",
+"grammars" :["who is"]
+}
+
+{"id": "4",
+"contenttype" :"GRAMMAR",
+"sentencetype" :"QUESTION.WHO",
+"action" :"PUT",
+"condition" :"startswith",
+"grammars" :["who are"]
+}
+
+{"id": "5",
+"contenttype" :"GRAMMAR",
+"sentencetype" :"QUESTION.WHO",
+"action" :"PUT",
+"condition" :"startswith",
+"grammars" :["who is"]
+}
+
+id 
+contenttype=GRAMMAR
+sentencetype=QUESTION.WHO
+action=PUT
+condition=startswith
+grammars=[who are, who is]
+responses=[Hello @ALIAS I am @SYSTEMNAME,Hello @ALIAS @SYSTEMNAME is my name]
+
+query
+
+who is kevin
+
+
+fg=GRAMMAR
+fq=startswith
+f=grammars:who are you
+i=76
+j=100
+q1={!zen f1=x i1=i j1=j}
+
+fg=GRAMMAR
+fq=contains
+f=grammars:who is jim OR grammars:who is OR grammars:who
+i=51
+j=75
+q2={!zen f2=x i2=i j2=j}
+
+id 
+contenttype=GRAMMAR
+sentencetype=QUESTION.DAY
+action=PUT
+condition=contains
+grammars=[what day is it,what day is]
+responses=[The day is @DAY,It is @DAY
+
+id 
+contenttype=GRAMMAR
+sentencetype=QUESTION.DAY
+action=PUT
+condition=startswith
+grammars=[what day is it,what day is]
+responses=[The day is @DAY,It is @DAY]
+
+id 
+contenttype=GRAMMAR
+sentencetype=QUESTION.TIME
+action=PUT
+condition=contains
+grammars=[what time]
+responses=[The time is @TIME,It is @TIME]
+
+id 
+contenttype=GRAMMAR
+sentencetype=QUESTION.TIME
+action=PUT
+condition=startswith
+grammars=[what time]
+responses=[The time is @TIME,It is @TIME]
+
+
+
+_val_:{!scaled queryPrefix="t1"}+OR+_val_:{!scaled queryPrefix="t2"}+OR+_val_:{!scaled queryPrefix="t3"}
+
+
+&t1q=%22who%22&t1l=0&t1u=50&t1df=grammars&t2q=%22who+is%22&t2l=51&t2u=75&t2df=grammars&t3q=%22who+is+kevin%22&t3l=76&t3u=100&t3df=grammars
+
+
+&t1q=%22who%22&t1l=0&t1u=3&t1df=grammars&t2q=%22who+is%22&t2l=4&t2u=7&t2df=grammars&t3q=%22who+is+kevin%22&t3l=8&t3u=10&t3df=grammars
+
+who is kevin
+
+t1 = who
+t2 = who AND is
+t3 = who AND is AND kevin
+
+_val_:{!scaled queryPrefix="t1"}+OR+_val_:{!scaled queryPrefix="t2"}+OR+_val_:{!scaled queryPrefix="t3"}
+t1q=who&t1l=0&t1u=3&t1df=grammars_zen&t2q=who+AND+is&t2l=4&t2u=7&t2df=grammars_zen&t3q=who+AND+is+AND+kevin&t3l=8&t3u=10&t3df=grammars_zen
+
+
+{"id": "2",
+"contenttype" :"GRAMMAR",
+"sentencetype" :"QUESTION.WHO.IS",
+"action" :"PUT",
+"condition" :"contains",
+"grammar" :"who are you"
+}
+
+
+{"id": "4",
+"contenttype" :"GRAMMAR",
+"sentencetype" :"QUESTION.WHO.IS",
+"action" :"PUT",
+"condition" :"startswith",
+"grammar" :"who is"
+}
+
+
+{"id": "4d",
+"contenttype" :"GRAMMARDETAIL",
+"sentencetype" :"QUESTION.WHO.IS",
+"responses" :["@SLOT.name rules","@SLOT.name is @QUERY:@SLOT.name"],
+"failedresponses" : ["@SLOT.name is unknown to me","@SLOT.name is missing"],
+"fields" : [
+    {
+        "name" : "name",
+        "type" : "text",
+        "required": true,
+        "directive" : [
+            "who are you asking about",
+            "tell me the name of the person you want info about"
+        ]
+    }
+]
+}
+
+{"id": "4d",
+"contenttype" :"GRAMMARDETAIL",
+"sentencetype" :"QUESTION.WHO.IS",
+"responses" : "ARRAYWyJAU0xPVC5uYW1lIHJ1bGVzIiwiQFNMT1QubmFtZSBpcyBAUVVFUlk6QFNMT1QubmFtZSJd",
+"failedresponses" : "ARRAYWyJAU0xPVC5uYW1lIGlzIHVua25vd24gdG8gbWUiLCJAU0xPVC5uYW1lIGlzIG1pc3NpbmciXQ==",
+"fields" : "ARRAYWw0KICAgIHsNCiAgICAgICAgIm5hbWUiIDogIm5hbWUiLA0KICAgICAgICAidHlwZSIgOiAidGV4dCIsDQogICAgICAgICJyZXF1aXJlZCI6IHRydWUsDQogICAgICAgICJkaXJlY3RpdmUiIDogWw0KICAgICAgICAgICAgIndobyBhcmUgeW91IGFza2luZyBhYm91dCIsDQogICAgICAgICAgICAidGVsbCBtZSB0aGUgbmFtZSBvZiB0aGUgcGVyc29uIHlvdSB3YW50IGluZm8gYWJvdXQiDQogICAgICAgIF0NCiAgICB9DQpd"
+}
+
+
+Ww0KICAgIHsNCiAgICAgICAgIm5hbWUiIDogIm5hbWUiLA0KICAgICAgICAidHlwZSIgOiAidGV4dCIsDQogICAgICAgICJyZXF1aXJlZCI6IHRydWUsDQogICAgICAgICJkaXJlY3RpdmUiIDogWw0KICAgICAgICAgICAgIndobyBhcmUgeW91IGFza2luZyBhYm91dCIsDQogICAgICAgICAgICAidGVsbCBtZSB0aGUgbmFtZSBvZiB0aGUgcGVyc29uIHlvdSB3YW50IGluZm8gYWJvdXQiDQogICAgICAgIF0NCiAgICB9DQpd
+
+
+
+
+{"id": "10d",
+"contenttype" :"GRAMMARDETAIL",
+"sentencetype" :"QUESTION.TIME",
+"responses" :"ARRAYWyJUaGUgdGltZSBpcyBAVElNRSIsIkN1cnJlbnQgdGltZSBpcyBAVElNRSJd",
+"failedresponses" : "ARRAYWyJ1bmFibGUgdG8gZ2V0IGN1cnJlbnQgdGltZSJd"
+}
+
+{"id": "10d",
+"contenttype" :"GRAMMARDETAIL",
+"sentencetype" :"QUESTION.TIME",
+"responses" :["The time is @TIME","It is @TIME"]
+}
+
+{"id": "20",
+"contenttype" :"GRAMMAR",
+"sentencetype" :"QUESTION",
+"action" :"PUT",
+"condition" :"startswith",
+"grammars" :["what"]
+}
+
+{"id": "10d",
+"contenttype" :"GRAMMARDETAIL",
+"sentencetype" :"QUESTION",
+"responses" :["I am not sure what you want to do with @KEYWORDS"]
+}
+
+{"id": "30",
+"contenttype" :"GRAMMAR",
+"sentencetype" :"QUESTION.DAY",
+"action" :"PUT",
+"condition" :"startswith",
+"grammars" :["what day is it"]
+}
+
+{"id": "30d",
+"contenttype" :"GRAMMARDETAIL",
+"sentencetype" :"QUESTION.DAY",
+"responses" :["The day is @DAY","It is @DAY"]
+}
+
+_val_:{!scaled queryPrefix="t1"} OR _val_:{!scaled queryPrefix="t2"} OR _val_:{!scaled queryPrefix="t3"} OR _val_:{!scaled queryPrefix="t4"}
+t1q=what&t1l=0&t1u=3&t1df=grammars_zen&t2q=what+AND+time&t2l=4&t2u=7&t2df=grammars_zen&t3q=what+AND+time+AND+is&t3l=8&t3u=10&t3df=grammars_zen&t4q=what+AND+time+AND+is+AND+it&t4l=11&t4u=13&t4df=grammars_zen
+
+{
+"id": "40",
+"contenttype" :"GRAMMAR",
+"sentencetype" :"QUESTION.HOW",
+"action" :"PUT",
+"condition" :"startswith",
+"grammars" :["how do"]
+}
+
+{"id": "40d",
+"contenttype" :"GRAMMARDETAIL",
+"sentencetype" :"QUESTION.HOW",
+"responses" :["I am not sure how @KEYWORDS"]
+}
+
+{"id": "40d",
+"contenttype" :"GRAMMARDETAIL",
+"sentencetype" :"QUESTION.HOW",
+"responses" :["ARRAYWyJJIGFtIG5vdCBzdXJlIGhvdyBAS0VZV09SRFMiXQ=="]
+}
+
+how do you make a sandwich
+
+_val_:{!scaled queryPrefix="t1"} OR _val_:{!scaled queryPrefix="t2"} OR _val_:{!scaled queryPrefix="t3"} OR _val_:{!scaled queryPrefix="t4"}
+t1q=how&t1l=0&t1u=3&t1df=grammars_zen&t2q=how+AND+do&t2l=4&t2u=7&t2df=grammars_zen&t3q=how+AND+do+AND+you&t3l=8&t3u=10&t3df=grammars_zen&t4q=how+AND+do+AND+you+AND+make&t4l=11&t4u=13&t4df=grammars_zen
+
+
+how is ben franklin
+_val_:{!scaled queryPrefix="t1"} OR _val_:{!scaled queryPrefix="t2"} OR _val_:{!scaled queryPrefix="t3"} OR _val_:{!scaled queryPrefix="t4"}
+t1q=who&t1l=0&t1u=3&t1df=grammars_zen&t2q=who+AND+is&t2l=4&t2u=7&t2df=grammars_zen&t3q=who+AND+is+AND+ben&t3l=8&t3u=10&t3df=grammars_zen&t4q=who+AND+is+AND+ben+AND+franklin&t4l=11&t4u=13&t4df=grammars_zen
+
+
+
+
+
+
+{"id": "2",
+"contenttype" :"GRAMMAR",
+"sentencetype" :"QUESTION.WHO.IS",
+"action" :"PUT",
+"condition" :"contains",
+"grammar" :"who are you"
+}
+
+
+{"id": "4",
+"contenttype" :"GRAMMAR",
+"sentencetype" :"QUESTION.WHO.IS",
+"action" :"PUT",
+"condition" :"startswith",
+"grammars" :"who is"
+}
+
+
+{"id": "4d",
+"contenttype" :"GRAMMARDETAIL",
+"sentencetype" :"QUESTION.WHO.IS",
+"responses" :["@SLOT.name rules","@SLOT.name is @QUERY:@SLOT.name"],
+"failedresponses" : ["@SLOT.name is unknown to me","@SLOT.name is missing"],
+"fields" : [
+    {
+        "name" : "name",
+        "type" : "text",
+        "required": true,
+        "directive" : [
+            "who are you asking about",
+            "tell me the name of the person you want info about"
+        ]
+    }
+]
+}
+
+{"id": "4d",
+"contenttype" :"GRAMMARDETAIL",
+"sentencetype" :"QUESTION.WHO.IS",
+"responses" : "ARRAYWyJAU0xPVC5uYW1lIHJ1bGVzIiwiQFNMT1QubmFtZSBpcyBAUVVFUlk6QFNMT1QubmFtZSJd",
+"failedresponses" : "ARRAYWyJAU0xPVC5uYW1lIGlzIHVua25vd24gdG8gbWUiLCJAU0xPVC5uYW1lIGlzIG1pc3NpbmciXQ==",
+"fields" : "ARRAYWw0KICAgIHsNCiAgICAgICAgIm5hbWUiIDogIm5hbWUiLA0KICAgICAgICAidHlwZSIgOiAidGV4dCIsDQogICAgICAgICJyZXF1aXJlZCI6IHRydWUsDQogICAgICAgICJkaXJlY3RpdmUiIDogWw0KICAgICAgICAgICAgIndobyBhcmUgeW91IGFza2luZyBhYm91dCIsDQogICAgICAgICAgICAidGVsbCBtZSB0aGUgbmFtZSBvZiB0aGUgcGVyc29uIHlvdSB3YW50IGluZm8gYWJvdXQiDQogICAgICAgIF0NCiAgICB9DQpd"
+}
+
+
+
+{"id": "1",
+"contenttype" :"GRAMMAR",
+"sentencetype" :"QUESTION.CANDO",
+"action" :"PUT",
+"condition" :"startswith",
+"grammars" :["what can you do","menu"]
+}
+
+{"id": "1d",
+"contenttype" :"GRAMMARDETAIL",
+"sentencetype" :"QUESTION.CANDO",
+"responses" :["create or list  time, equipment, job and what or who is queries"],
+"failedresponses" : ["unable to anything, I have issues"]
+}
+
+
+{"id": "2",
+"contenttype" :"GRAMMAR",
+"sentencetype" :"ABORT",
+"action" :"PUT",
+"condition" :"startswith",
+"grammars" :["abort","cancel"]
+}
+
+{"id": "2d",
+"contenttype" :"GRAMMARDETAIL",
+"sentencetype" :"ABORT",
+"responses" :["I have reset"],
+"failedresponses" : ["I can not reset"]
+}
+
+{"id": "3",
+"contenttype" :"GRAMMAR",
+"sentencetype" :"BACK",
+"action" :"PUT",
+"condition" :"startswith",
+"grammars" :["back"]
+}
+
+{"id": "3d",
+"contenttype" :"GRAMMARDETAIL",
+"sentencetype" :"BACK",
+"responses" :["I have moved back"],
+"failedresponses" : ["I can not move back"]
+}
+
+{"id": "4",
+"contenttype" :"GRAMMAR",
+"sentencetype" :"HELP",
+"action" :"PUT",
+"condition" :"startswith",
+"grammars" :["help"]
+}
+
+{"id": "4d",
+"contenttype" :"GRAMMARDETAIL",
+"sentencetype" :"HELP",
+"responses" :["I can help you"],
+"failedresponses" : ["I can not help you"]
+}
+
+
+
+
+{"id": "10",
+"contenttype" :"GRAMMAR",
+"sentencetype" :"QUESTION.TIME",
+"action" :"PUT",
+"condition" :"startswith",
+"grammars" :["what time is it"]
+}
+
+{"id": "10d",
+"contenttype" :"GRAMMARDETAIL",
+"sentencetype" :"QUESTION.TIME",
+"responses" :["The time is @TIME","Current time is @TIME"],
+"failedresponses" : ["unable to get current time"]
+}
+
+
+{"id": "3",
+"contenttype" :"GRAMMAR",
+"sentencetype" :"HELP",
+"action" :"PUT",
+"condition" :"startswith",
+"grammars" :["help","what can you do","how can you help me"]
+}
+
+
+{"id": "3d",
+"contenttype" :"GRAMMARDETAIL",
+"sentencetype" :"HELP",
+"responses" :["@QUERY:help"],
+"failedresponses" : ["I can not help you","no help here"],
+}
+
+
+{"id": "4",
+"contenttype" :"GRAMMAR",
+"sentencetype" :"QUESTION.WHO.IS",
+"action" :"PUT",
+"condition" :"startswith",
+"grammars" :"who is"
+}
+
+
+{"id": "4d",
+"contenttype" :"GRAMMARDETAIL",
+"sentencetype" :"QUESTION.WHO.IS",
+"responses" :["@SLOT.name is @QUERY:@SLOT.name"],
+"failedresponses" : ["@SLOT.name is unknown to me","@SLOT.name is missing"],
+"fields" : [
+    {
+        "name" : "name",
+        "type" : "text",
+        "required": true,
+        "directive" : [
+            "who are you asking about",
+            "tell me the name of the person you want info about"
+        ]
+    }
+]
+}
+
+{"id": "5",
+"contenttype" :"GRAMMAR",
+"sentencetype" :"QUESTION.WHAT.IS",
+"action" :"PUT",
+"condition" :"startswith",
+"grammars" :"what is"
+}
+
+
+{"id": "5d",
+"contenttype" :"GRAMMARDETAIL",
+"sentencetype" :"QUESTION.WHAT.IS",
+"responses" :["@SLOT.name is @QUERY:@SLOT.name"],
+"failedresponses" : ["@SLOT.name is unknown to me","@SLOT.name is missing"],
+"fields" : [
+    {
+        "name" : "name",
+        "type" : "text",
+        "required": true,
+        "directive" : [
+            "what are you asking about",
+            "tell me the name of the tpoc you want info about"
+        ]
+    }
+]
+}
+
+{"id": "50",
+"contenttype" :"GRAMMAR",
+"sentencetype" :"CREATE.TIME",
+"action" :"PUT",
+"condition" :"startswith",
+"grammars" : ["create time"]
+}
+
+
+{"id": "51",
+"contenttype" :"GRAMMARDETAIL",
+"sentencetype" :"CREATE.TIME",
+"responses" :["@SLOT.job is @ACTION:setCurrentView:trackeredit:job"],
+"failedresponses" : ["unable to create time entry"],
+"fields" : [
+    {
+        "name" : "job",
+        "type" : "text",
+        "required": true,
+        "directive" : [
+            "what job are we using",
+            "what job "
+        ]
+    }
+]
+}
+
+{"id": "52",
+"contenttype" :"GRAMMAR",
+"sentencetype" :"LIST.TIME",
+"action" :"PUT",
+"condition" :"startswith",
+"grammars" : ["list time"]
+}
+
+
+{"id": "53",
+"contenttype" :"GRAMMARDETAIL",
+"sentencetype" :"LIST.TIME",
+"responses" :["Time List @ACTION:setCurrentView:tracker"],
+"failedresponses" : ["unable to list time entry"]
+}
+
+
+{"id": "60",
+"contenttype" :"GRAMMAR",
+"sentencetype" :"CREATE.EQUIPMENT",
+"action" :"PUT",
+"condition" :"startswith",
+"grammars" : ["create equipment"]
+}
+
+
+{"id": "61",
+"contenttype" :"GRAMMARDETAIL",
+"sentencetype" :"CREATE.EQUIPMENT",
+"responses" :["@SLOT.title is @ACTION:setCurrentView:equipmentedit:title"],
+"failedresponses" : ["unable to create equipment"],
+"fields" : [
+    {
+        "name" : "title",
+        "type" : "text",
+        "required": true,
+        "directive" : [
+            "what equipment are we using",
+            "what equipment "
+        ]
+    }
+]
+}
+
+{"id": "62",
+"contenttype" :"GRAMMAR",
+"sentencetype" :"LIST.EQUIPMENT",
+"action" :"PUT",
+"condition" :"startswith",
+"grammars" : ["list equipment"]
+}
+
+
+{"id": "63",
+"contenttype" :"GRAMMARDETAIL",
+"sentencetype" :"LIST.EQUIPMENT",
+"responses" :["Equipment List is @ACTION:setCurrentView:equipment"],
+"failedresponses" : ["unable to list equipment"]
+}
+
+{"id": "70",
+"contenttype" :"GRAMMAR",
+"sentencetype" :"CREATE.JOB",
+"action" :"PUT",
+"condition" :"startswith",
+"grammars" : ["create job"]
+}
+
+
+{"id": "71",
+"contenttype" :"GRAMMARDETAIL",
+"sentencetype" :"CREATE.JOB",
+"responses" :["@SLOT.title is @ACTION:setCurrentView:jobedit:title"],
+"failedresponses" : ["unable to create job"],
+"fields" : [
+    {
+        "name" : "title",
+        "type" : "text",
+        "required": true,
+        "directive" : [
+            "what job are we using",
+            "what job "
+        ]
+    }
+]
+}
+
+{"id": "72",
+"contenttype" :"GRAMMAR",
+"sentencetype" :"LIST.JOB",
+"action" :"PUT",
+"condition" :"startswith",
+"grammars" : ["list job"]
+}
+
+{"id": "73",
+"contenttype" :"GRAMMARDETAIL",
+"sentencetype" :"LIST.JOB",
+"responses" :["Jobs are @ACTION:setCurrentView:job"],
+"failedresponses" : ["unable to list job"]
+}
+
+{"id": "400",
+"contenttype" :"CONTENT",
+"contenttitle" :"Kevin",
+"contentbody" :"kevin rules",
+"contentowner" :"zen"
+}
+{"id": "401",
+"contenttype" :"CONTENT",
+"contenttitle" :"thor",
+"contentbody" :"thor is cool",
+"contentowner" :"zen"
+}
+{"id": "402",
+"contenttype" :"CONTENT",
+"contenttitle" :"grant",
+"contentbody" :"grant rocks",
+"contentowner" :"zen"
+}
+{"id": "403",
+"contenttype" :"CONTENT",
+"contenttitle" :"info about grass",
+"contentbody" :"grass is green,  you can mow your grass",
+"contentowner" :"zen"
+}
+
+{"id": "404",
+"contenttype" :"CONTENT",
+"contenttitle" :"info about fiber",
+"contentbody" :"fiber is a optical transmission method of serial data",
+"contentowner" :"zen"
+}
+
+{"id": "4005",
+"contenttype" :"CONTENT",
+"contenttitle" :"Create Time",
+"contentbody" :"Help: I can create time entries.  Just say create time.",
+"carryforward": "create time",
+"contentowner" :"zen"
+}
+
+{"id": "4006",
+"contenttype" :"CONTENT",
+"contenttitle" :"Create Equipment",
+"contentbody" :"Help:  I can create equipment entries.  Just say create equipment.",
+"carryforward": "create equipment",
+"contentowner" :"zen"
+}
+
+{"id": "4007",
+"contenttype" :"CONTENT",
+"contenttitle" :"Create Job",
+"contentbody" :"Help:  I can create job entries.  Just say create job.",
+"carryforward": "create job",
+"contentowner" :"zen"
+}
+
+{"id": "4008",
+"contenttype" :"CONTENT",
+"contenttitle" :"List Time",
+"contentbody" :"Help:  I can list time entries.  Just say list time.",
+"carryforward": "list time",
+"contentowner" :"zen"
+}
+
+{"id": "4009",
+"contenttype" :"CONTENT",
+"contenttitle" :"List Equipment",
+"contentbody" :"Help:  I can list equipment entries.  Just say list equipment.",
+"carryforward": "list equipment",
+"contentowner" :"zen"
+}
+
+{"id": "4010",
+"contenttype" :"CONTENT",
+"contenttitle" :"List Job",
+"contentbody" :"Help:  I can list job entries.  Just say list job.",
+"carryforward": "list job",
+"contentowner" :"zen"
+}

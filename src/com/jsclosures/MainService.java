@@ -76,6 +76,7 @@ public class MainService extends RestServiceServlet {
                     
                 } else if (mode.equalsIgnoreCase("POST")) {
                     DataBean queryArgs = Helper.readAllJSONParameters(this, req);
+                    writeLog(2,queryArgs.toString());
                     if( !queryArgs.isValid("contenttype") )
                         queryArgs = Helper.readAllParameters(this, req);
                     

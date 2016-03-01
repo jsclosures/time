@@ -23,6 +23,7 @@ public class ContentService extends SolrService {
     public static String FIELDLIST[][] = {{"id","NUMBER"},
         {"contenttitle","STRING"},
         {"contentbody","STRING"},
+        {"carryforward","STRING"},
         {"contenttype","STRING"},
         {"contentowner","STRING"},
         {"last_modified","DATE"}};

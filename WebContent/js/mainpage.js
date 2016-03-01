@@ -37,18 +37,103 @@ function internalBuildMainPage(mainContext, mainId) {
     var registeredWidgetList = new Array();
     console.log("Main page context " + context + " in : " + mainId);
 
+    var currentState = false;
+    function doAction() {
+            var input = anyWidgetById(mainForm + "search").get("value");
+            
+            if( !currentState ){
+                currentState = {input: input,callback: handleResponse};
+                anyWidgetById(mainForm + "message").set("content","");
+            }
+            else {
+                currentState.input = input;
+            }
+            
+            zen.respond(currentState);
+    }
+    
+    function handleResponse(response){
+        //console.log(response);
+        
+        var mainFrame = response[0];
+        
+        zen.speakMessage(mainFrame.response);
+        
+        anyWidgetById(getCurrentContext().headerDivName).set("label",mainFrame.response);
+        anyWidgetById(mainForm + "title").set("content",mainFrame.response);
+        
+        anyWidgetById(mainForm + "search").set("value","");
+        var newStore = false;
+        var placeHolder = "";
+        if( mainFrame.currentField ){
+            var fieldType = mainFrame.currentField.type;
+            
+            
+            if( fieldType == 'confirm' ){
+                newStore = new dojo.store.Memory({idProperty: "id", data: mainFrame.currentField.options});
+                placeHolder = "Yes or No";
+            }
+            else {
+                newStore = new dojo.store.Memory({idProperty: "value", data: []});
+            }
+            
+        }
+        else {
+            newStore = new dojo.store.Memory({idProperty: "value", data: []});
+        
+        }
+        //newStore = new dojo.data.ObjectStore({storeData: newStore});
+        anyWidgetById(mainForm + "search").closeDropDown();
+        anyWidgetById(mainForm + "search").set("placeHolder",placeHolder);
+        anyWidgetById(mainForm + "search").set("store",newStore);
+        
+        if( newStore && newStore.data.length > 0 ){
+            anyWidgetById(mainForm + "search").set("value",newStore.data[0].id);
+        }
+        
+        if( mainFrame.isComplete ){
+            currentState = false;
+            
+           /* var newFrame = dojo.clone(mainFrame);
+            var previousState = newFrame.previousState;
+            
+            delete newFrame["previousState"];
+            delete previousState["_slotValue"];
+            delete previousState["_grammarIndex"];
+            delete previousState["_input"];
+            var tContent = "Result: " + dojo.toJson(newFrame);
+            if( previousState ){
+                tContent += "<br/>Frame: " + dojo.toJson(previousState);
+            }
+            
+            anyWidgetById(mainId + "message").set("content",tContent);*/
+            
+        }
+    }
+    
     if (context) {
         function onListClick(){
             var item = this;
             var target = item.actualRecord;
             console.log(target.contenttitle);
             
-            getCurrentContext().setCurrentView("content");
-            
-            var doLater = function(){
-                anyWidgetById("content").setTarget(item.actualRecord);
+            if( target.carryforward ){
+                context.carryForward(target);
             }
-            getCurrentContext().setCurrentView("content", [doLater]);
+            else { 
+                var doLater = function(){
+                    anyWidgetById("content").setTarget(item.actualRecord);
+                }
+                getCurrentContext().setCurrentView("content", [doLater]);
+            }
+            
+            
+        }
+        
+        context.carryForward = function(target){
+            anyWidgetById(mainForm + "search").set("value",target.carryforward);
+            
+            setTimeout(doAction,1000);      
         }
         
         context.loadQuery = function(data){
@@ -84,7 +169,7 @@ function internalBuildMainPage(mainContext, mainId) {
                     
                     dijit.byId(mainForm + "itemlist").setStore(newStore);
                 }
-                getCurrentContext().CacheManager.getData({contenttype:"CONTENT",nocache: true,contentbody: data.query,callback: doLater});
+                getCurrentContext().CacheManager.getData({contenttype:"CONTENT",nocache: true,contentall: data.query,callback: doLater});
                         
         }
         context.initChild = function () {
@@ -118,6 +203,12 @@ function internalBuildMainPage(mainContext, mainId) {
 		if( !started ){
                     buildMainPage({id: mainForm});
                     started = true;
+                    
+                    var initialCommand = getCurrentContext().UIProfileManager.getString("initialCommand");
+                    if( initialCommand ){
+                        anyWidgetById(mainForm + "search").set("value",initialCommand);
+                        doAction();
+                    }
                 }
         }
 
@@ -175,7 +266,7 @@ function internalBuildMainPage(mainContext, mainId) {
                     registeredWidgetList.push(label.id);
                     formContainer.addChild(label);
                     
-                    zen.speakMessage(initialMessage);
+                    //zen.speakMessage(initialMessage);*/
                 
     
               var titleField = new dojox.mobile.ComboBox(
@@ -195,6 +286,8 @@ function internalBuildMainPage(mainContext, mainId) {
                               }
                           }
                       );
+                      titleField.domNode.setAttribute("x-webkit-speech",true);
+                      titleField.domNode.setAttribute("speech",true);
                    registeredWidgetList.push(titleField.id);   
               
             formContainer.addChild(titleField);
@@ -240,77 +333,9 @@ function internalBuildMainPage(mainContext, mainId) {
                 formContainer.startup();
                 outerContainer.startup();
     
-            function handleResponse(response){
-                //console.log(response);
-                
-                var mainFrame = response[0];
-                
-                zen.speakMessage(mainFrame.response);
-                
-                anyWidgetById(mainId + "title").set("content",mainFrame.response);
-                anyWidgetById(mainId + "search").set("value","");
-                var newStore = false;
-                var placeHolder = "";
-                if( mainFrame.currentField ){
-                    var fieldType = mainFrame.currentField.type;
-                    
-                    
-                    if( fieldType == 'confirm' ){
-                        newStore = new dojo.store.Memory({idProperty: "id", data: mainFrame.currentField.options});
-                        placeHolder = "Yes or No";
-                    }
-                    else {
-                        newStore = new dojo.store.Memory({idProperty: "value", data: []});
-                    }
-                    
-                }
-                else {
-                    newStore = new dojo.store.Memory({idProperty: "value", data: []});
-                
-                }
-                //newStore = new dojo.data.ObjectStore({storeData: newStore});
-                anyWidgetById(mainId + "search").closeDropDown();
-                anyWidgetById(mainId + "search").set("placeHolder",placeHolder);
-                anyWidgetById(mainId + "search").set("store",newStore);
-                
-                if( newStore && newStore.data.length > 0 ){
-                    anyWidgetById(mainId + "search").set("value",newStore.data[0].id);
-                }
-                
-                if( mainFrame.isComplete ){
-                    currentState = false;
-                    
-                   /* var newFrame = dojo.clone(mainFrame);
-                    var previousState = newFrame.previousState;
-                    
-                    delete newFrame["previousState"];
-                    delete previousState["_slotValue"];
-                    delete previousState["_grammarIndex"];
-                    delete previousState["_input"];
-                    var tContent = "Result: " + dojo.toJson(newFrame);
-                    if( previousState ){
-                        tContent += "<br/>Frame: " + dojo.toJson(previousState);
-                    }
-                    
-                    anyWidgetById(mainId + "message").set("content",tContent);*/
-                    
-                }
-            }
             
-            var currentState = false;
-            function doAction() {
-                    var input = anyWidgetById(mainId + "search").get("value");
-                    
-                    if( !currentState ){
-                        currentState = {input: input,callback: handleResponse};
-                        anyWidgetById(mainId + "message").set("content","");
-                    }
-                    else {
-                        currentState.input = input;
-                    }
-                    
-                    zen.respond(currentState);
-            }
+            
+            
             
             
             return( outerContainer );

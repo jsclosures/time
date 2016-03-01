@@ -14,7 +14,8 @@ function buildEquipmentEditPage(mainContext, mainId,currentChild) {
                     "dojox/mobile/TabBar",
                     "dojox/mobile/TabBarButton",
                     "dojo/data/ItemFileReadStore",
-                    "dojox/mobile/Video"
+                    "dojox/mobile/Video",
+                    "dojox/form/FileInput"
          ], 
          function(){
         	 //console.log("building Content page");
@@ -39,9 +40,15 @@ function internalBuildEquipmentEditPage(mainContext, mainId) {
     var formFields = new Array();
     formFields.push({label: "title",name: "title","type": "TEXTFIELD"});
     formFields.push({label: "comments",name: "comments","type": "TEXTFIELD"});
-            
+       
     //console.log("content page context " + context + " in : " + mainId);
-
+    function hasUserMedia(){
+        return( navigator.getUserMedia ||
+               navigator.webkitGetUserMedia ||
+               navigator.mozGetUserMedia ||
+               navigator.msGetUserMedia);  
+    }
+    
     if (context) {
         context.initChild = function () {
 		  //console.log("init Content page");
@@ -95,6 +102,7 @@ function internalBuildEquipmentEditPage(mainContext, mainId) {
                     if( tObj ){
                         tObj.set("value",target[tField.name] ? target[tField.name] : "");
                     }
+                
                 }
                 
                 currentPhoto = false;
@@ -121,9 +129,11 @@ function internalBuildEquipmentEditPage(mainContext, mainId) {
                       // successCallback
                       function(localMediaStream) {
                          var video = dojo.byId(mainForm + "video");
-                         video.src = window.URL.createObjectURL(localMediaStream);
-                         // Do something with the video here, e.g. video.play()
-                         video.play();
+                         if( video ){
+                             video.src = window.URL.createObjectURL(localMediaStream);
+                             // Do something with the video here, e.g. video.play()
+                             video.play();
+                         }
                       },
                 
                       // errorCallback
@@ -175,6 +185,9 @@ function internalBuildEquipmentEditPage(mainContext, mainId) {
                               name: mainForm + "title"
                           }
                       );
+       
+                      titleField.domNode.setAttribute("x-webkit-speech",true);
+                      titleField.domNode.setAttribute("speech",true);
                    registeredWidgetList.push(titleField.id);   
               
             formContainer.addChild(titleField);
@@ -190,9 +203,23 @@ function internalBuildEquipmentEditPage(mainContext, mainId) {
                               name: mainForm + "comments"
                           }
                       );
+                      titleField.domNode.setAttribute("x-webkit-speech",true);
+                      titleField.domNode.setAttribute("speech",true);
                    registeredWidgetList.push(titleField.id);   
               
             formContainer.addChild(titleField);
+            
+            /*var fileField = new dojox.form.FileInput(
+                          {
+                              id: mainForm + "photo",
+                              name: mainForm + "photo",
+                              accept: "image/*",
+                              capture: "camera"
+                          }
+                      );
+                   registeredWidgetList.push(fileField.id);   
+              
+            formContainer.addChild(fileField);*/
         
             
             
@@ -246,10 +273,22 @@ function internalBuildEquipmentEditPage(mainContext, mainId) {
             registeredWidgetList.push(cancelButton.id);
             controlContainer.addChild(cancelButton); 
             
+            if( hasUserMedia() ){
+                var fileWrapper = new dojox.mobile.ContentPane({id: mainForm + "filewrapper",content: "<input id=\"" + mainForm + "file" + "\" type=\"file\" xxxaccept=\"image/*\" xxcapture></input>"});
+                        registeredWidgetList.push(fileWrapper.id);
+                        formContainer.addChild(fileWrapper);
+
+                var videoWrapper = new dojox.mobile.ContentPane({id: mainForm + "videowrapper",content: "<video id=\"" + mainForm + "video" + "\" autobuffer style=\"border: 0px solid black;width: 320px;height: 240px;\"></video>"});
+                        registeredWidgetList.push(videoWrapper.id);
+                        formContainer.addChild(videoWrapper);
+            }
+            else {
             
-            var videoWrapper = new dojox.mobile.ContentPane({id: mainForm + "videowrapper",content: "<video id=\"" + mainForm + "video" + "\" style=\"border: 0px solid black;width: 320px;height: 240px;\"></video>"});
-                    registeredWidgetList.push(videoWrapper.id);
-                    formContainer.addChild(videoWrapper);
+               var fileWrapper = new dojox.mobile.ContentPane({id: mainForm + "filewrapper",content: "<input id=\"" + mainForm + "file" + "\" type=\"file\" xxxaccept=\"image/*\" xxcapture></input>"});
+                        registeredWidgetList.push(fileWrapper.id);
+                        formContainer.addChild(fileWrapper);
+                        
+            }
             
             var viewWrapper = new dojox.mobile.ContentPane({id: mainForm + "viewwrapper",content: "<canvas id=\"" + mainForm + "view" + "\" style=\"border: 0px solid black;width: 320px;height: 240px;\"></canvas>"});
                     registeredWidgetList.push(viewWrapper.id);
@@ -284,8 +323,37 @@ function internalBuildEquipmentEditPage(mainContext, mainId) {
             
             function doPhotoAction() {
                 var video = anyWidgetById(mainForm + "video");
+                var file = anyWidgetById(mainForm + "file");
                 var result = false;
-                if( video ){
+                if( file && file.files && file.files.length > 0 ){
+                    /*var fr = new FileReader();
+                    var doLater = function(){                    
+                        var canvas = dojo.byId(mainForm + "view");
+                        var ctx = canvas.getContext('2d');
+                        ctx.drawImage(fr.result, 0, 0, canvas.width, canvas.height);
+                         var imageData = canvas.toDataURL('image/png', 1);
+                         console.log(imageData);
+                         result = imageData;
+                         currentPhoto = result;
+                    }
+                    
+                    fr.onload = doLater;
+                    fr.readAsBinaryString(file.files[0]);*/
+                    
+                    var url = URL.createObjectURL(file.files[0]);
+                    var img = new Image();
+                    img.onload = function() {
+                        var canvas = dojo.byId(mainForm + "view");
+                        var ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                         var imageData = canvas.toDataURL('image/png', 1);
+                         console.log(imageData);
+                         result = imageData;
+                         currentPhoto = result;   
+                    }
+                    img.src = url;   
+                }
+                else if( hasUserMedia() && video ){
                     var canvas = dojo.byId(mainForm + "view");
                     var ctx = canvas.getContext('2d');
                     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);

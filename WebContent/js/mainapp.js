@@ -123,12 +123,16 @@ function buildMainApp(args) {
         //console.log("check app title " + tTitle);
 
         if (tTitle) {
-            var tObj = anyWidgetById("apptitle");
+            var tObj = anyWidgetById(context.headerDivName);
 
             if (tObj) {
                 //console.log("set app title " + tTitle);
 
-                tObj.set("label", tTitle);
+                //tObj.set("label", tTitle);
+                
+                var initialMessage = getCurrentContext().UIProfileManager.getString("initialSearch");
+                tObj.set("label", initialMessage);
+                zen.speakMessage(initialMessage);
             }
         }
         
@@ -211,6 +215,12 @@ function buildMainApp(args) {
         if( tFooterDijit && tFooterDijit.lifecycle && tFooterDijit.lifecycle.resizeDisplay )
             tFooterDijit.lifecycle.resizeDisplay();
     }
+    
+    var cContext = getCurrentContext();
+    
+    cContext.appDivName = context.appDivName;
+    cContext.headerDivName = context.headerDivName;
+    cContext.footerDivName = context.footerDivName;
 
     buildApplication(context);
 

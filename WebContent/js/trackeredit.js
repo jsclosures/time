@@ -239,7 +239,8 @@ function internalBuildTrackerEditPage(mainContext, mainId) {
                                   );
                               
                           }
-                                  
+                           newField.domNode.setAttribute("x-webkit-speech",true);
+                      newField.domNode.setAttribute("speech",true);       
                                   
                                registeredWidgetList.push(newField.id);   
                           

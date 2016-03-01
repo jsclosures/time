@@ -60,7 +60,10 @@
     "unknowInput": "I do not understand, tell me more",
     "loginMessage": "Please login ${1}",
     "next": "Next",
-    "home": "Home"
+    "home": "Home",
+    "newEquipment": "Add Equipment",
+    "initialCommand": "help",
+    "newJob": "Add Job"
 },
 "help": {
     "login": "Please use your username and password to login.",
