@@ -87,6 +87,7 @@ function internalBuildEquipmentViewPage(mainContext, mainId) {
                     });
                 }
                 
+                getCurrentContext().purgeNextActions();
         }
         
         

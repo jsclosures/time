@@ -65,7 +65,7 @@ function internalBuildEquipmentPage(mainContext, mainId) {
         }
         function onListClick(){
             var item = this;
-            console.log(item.actualRecord.equipmenttitle);
+            console.log(item.actualRecord.title);
             
             var doLater = function(){
                 anyWidgetById("equipmentview").setTarget(item.actualRecord);
@@ -113,6 +113,7 @@ function internalBuildEquipmentPage(mainContext, mainId) {
                 }
                 getCurrentContext().CacheManager.getData({contenttype:"EQUIPMENT",callback: doLater});
 		
+                getCurrentContext().purgeNextActions();
         }
 
         context.stopChild = function () {

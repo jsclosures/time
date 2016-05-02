@@ -25,6 +25,7 @@ public class SignUpService implements RestImplService {
         {"useralias","STRING"},
         {"contenttype","STRING"},
         {"contentowner","STRING"},
+        {"groupname","STRING"},
         {"last_modified","DATE"}};
     
     public DataBean getData(RestService context,DataBean args) {
@@ -41,8 +42,7 @@ public class SignUpService implements RestImplService {
         {
           columNameList.add(FIELDLIST[i][0]);
         }
-        
-        columNameList.add("value");
+    
 
         String dataSourceURL = SolrHelper.getDefaultDataSourceURL(context);
 
@@ -72,8 +72,6 @@ public class SignUpService implements RestImplService {
             context.writeLog(1,"userList: " + userList);
             
             if( userList == null || userList.size() == 0 ){
-                //save the user
-                service.postData(context,args);
                 
                 solrTmp.setValue("id",SolrHelper.hashIDWithPrefix("SU"));  
                 solrTmp.setValue("contenttype",CONTENTTYPE);
@@ -85,19 +83,49 @@ public class SignUpService implements RestImplService {
                 
                 String contentOwner;
                 
-                if( queryArgs.isValid("groupkey") ){
-                    contentOwner = queryArgs.getString("groupkey");
+                if( args.isValid("groupkey") ){
+                    contentOwner = args.getString("groupkey");
+                    DataBean uqueryArgs = new DataBean();
+                    uqueryArgs.setValue("contenttype",SignUpService.CONTENTTYPE);
+                    uqueryArgs.setValue("contentowner",contentOwner);
+                    uqueryArgs.setObject("request",args.getObject("request"));
+                    uqueryArgs.setObject("response",args.getObject("response"));
+                    context.writeLog(1,"queryArgs: " + uqueryArgs.toString());
+                    
+                    DataBean groupResult = service.getData(context,uqueryArgs);
+                    context.writeLog(1,"groupResult: " + groupResult);
+                    
+                    ArrayList<DataBean> groupList = groupResult.getCollection("beanlist");
+                    context.writeLog(1,"groupList: " + groupList);
+                    
+                    if( groupList != null || groupList.size() > 0 ){
+                        DataBean group = groupList.get(0);
+                        solrTmp.setValue("groupname",group.getValue("groupname"));
+                    }
                 }
-                else if( queryArgs.isValid("usergroup") ) {
-                    contentOwner = Helper.hashUserKey(queryArgs.getString("usergroup"));
+                else if( args.isValid("groupname") ) {
+                    solrTmp.setValue("groupname",args.getString("groupname"));
+                    
+                    contentOwner = Helper.hashUserKey(args.getString("groupname"));
+                    solrTmp.setValue("groupkey",contentOwner);
+                    columNameList.add("groupkey");
+                    
+                    context.writeLog(1,"by groupname: " + contentOwner + " from " + args.getString("groupname"));
                 }
                 else {
                     contentOwner = "zen";
+                    solrTmp.setValue("groupname",contentOwner);
+                    solrTmp.setValue("groupkey",contentOwner);
+                    
+                    context.writeLog(1,"by default: " + contentOwner);
                 }
                 solrTmp.setValue("contentowner",contentOwner);  
                 
                 solrTmp.setValue("last_modified",SolrHelper.getTimestamp()); 
         
+                args.setValue("contentowner",contentOwner);
+                //save the user
+                service.postData(context,args);
                 
                 CloudSolrClient solrServer = SolrHelper.getSolrServer(resourceURL, timeOut);
         
@@ -124,6 +152,7 @@ public class SignUpService implements RestImplService {
             if( !args.isValid("useremail") ){
                 missing.append("useremail ");
             }
+            columNameList.add("value");
             
             solrTmp.setValue("value","missing: " + missing.toString());
         }
@@ -162,7 +191,7 @@ public class SignUpService implements RestImplService {
     }
 
     public static void main(String[] args) {
-    	InitService gs = new InitService();
+    	SignUpService gs = new SignUpService();
         DataBean foo = gs.getData(null,new DataBean());
         System.out.println(foo);
     }

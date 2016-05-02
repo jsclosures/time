@@ -117,7 +117,9 @@ function internalBuildContentPage(mainContext, mainId) {
               var titleField = new dojox.mobile.TextBox(
                           {
                               id: mainId + "title",
-                              name: mainId + "title"
+                              name: mainId + "title",
+                              style: "width: 100%",
+                              rows: 10
                           }
                       );
                    registeredWidgetList.push(titleField.id);   
@@ -131,7 +133,8 @@ function internalBuildContentPage(mainContext, mainId) {
               var bodyField = new dojox.mobile.TextArea(
                           {
                               id: mainId + "body",
-                              name: mainId + "body"
+                              name: mainId + "body",
+                              style: "width: 100%"
                           }
                       );
                    registeredWidgetList.push(bodyField.id);   
@@ -140,7 +143,7 @@ function internalBuildContentPage(mainContext, mainId) {
         
             
             
-            var controlContainer = new dojox.mobile.RoundRect({id: mainId + "innercontrol"});
+            /*var controlContainer = new dojox.mobile.RoundRect({id: mainId + "innercontrol"});
             registeredWidgetList.push(controlContainer.id);
             formContainer.addChild(controlContainer);
             
@@ -158,10 +161,10 @@ function internalBuildContentPage(mainContext, mainId) {
             });
             
             registeredWidgetList.push(loginButton.id);
-            controlContainer.addChild(loginButton); 
+            controlContainer.addChild(loginButton); */
             
                formContainer.startup();
-               controlContainer.startup();
+               //controlContainer.startup();
         
                 outerContainer.startup();
     

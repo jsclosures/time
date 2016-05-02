@@ -423,7 +423,7 @@ function buildApplication(ctx)
                        }
                 }
                 
-                getCurrentContext().purgeNextActions();
+                //getCurrentContext().purgeNextActions();
           }
      }
 }
@@ -2169,7 +2169,7 @@ function buildTabContainer(ctx) {
                                
                        }
                 }
-                getCurrentContext().purgeNextActions();
+                //getCurrentContext().purgeNextActions();
           }
      }
 	

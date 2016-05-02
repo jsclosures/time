@@ -8,9 +8,12 @@ zen.replaceAll = function(str,find, replace) {
 zen.speakMessage = function(message){
     try{
         if( window.speechSynthesis ){
-            window.speechSynthesis.speak(
-                new SpeechSynthesisUtterance(message)
-            );
+            var voices = window.speechSynthesis.getVoices();
+            var utterance = new SpeechSynthesisUtterance(message);
+            if( voices ){
+                utterance.voice = voices[0];
+            }
+            window.speechSynthesis.speak(utterance);
         }
         else if( meSpeak ){
             meSpeak.speak(message)
@@ -147,7 +150,7 @@ zen.replaceTokens = function(args,responseText){
         
         getCurrentContext().notifyDataChange(data);
         
-        result = zen.replaceAll(result,"@QUERY:" + query,"searching for " + query);
+        result = zen.replaceAll(result,"@QUERY:" + query,"");
     }
     
     if( result.indexOf("@ACTION") > -1 ){
@@ -187,7 +190,15 @@ zen.replaceTokens = function(args,responseText){
         }
         setTimeout(doLater,2000);
         
-        result = zen.replaceAll(result,"@ACTION:" + action,"launching...");
+        result = zen.replaceAll(result,"@ACTION:" + action,"");
+    }
+    
+    if( result.indexOf("@LOGOUT") > -1 ){
+        result = getCurrentContext().UIProfileManager.getString("goodbye");
+        var doLater = function(){
+            getCurrentContext().logout();
+        }
+        setTimeout(doLater,1000);
     }
     
     return( result );

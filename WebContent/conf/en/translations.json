@@ -26,7 +26,7 @@
     "welcomeTabName": "Welcome",
     "applicationAbout": "Time 1.0",
     "initialSearch": "What Can I Do For You?",
-    "name": "Name",
+    "name": "Title",
     "action": "Action",
     "target": "Target",
     "required": "Required",
@@ -63,7 +63,12 @@
     "home": "Home",
     "newEquipment": "Add Equipment",
     "initialCommand": "help",
-    "newJob": "Add Job"
+    "newJob": "Add Job",
+    "title": "Title",
+    "contentTitle": "Title",
+    "contentBody": "Details",
+    "return": "Back",
+    "jobTitle": "Job"
 },
 "help": {
     "login": "Please use your username and password to login.",

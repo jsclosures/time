@@ -144,6 +144,7 @@
 <field name="authname" type="string" indexed="true" stored="true" multiValued="false"/>
 <field name="authkey" type="string" indexed="true" stored="true" multiValued="false"/>
 <field name="useremail" type="string" indexed="true" stored="true" multiValued="false"/>
+<field name="userstatus" type="string" indexed="true" stored="true" multiValued="false"/>
     
 <field name="body" type="terms_js" indexed="true" stored="true" multiValued="false"/>
 <field name="terms" type="terms_jsstem" indexed="true" stored="true" multiValued="false" omitNorms="false" omitPositions="false" omitTermFreqAndPositions="false" termVectors="true"/>

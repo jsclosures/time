@@ -99,6 +99,8 @@
 <field name="authkey" type="string" indexed="true" stored="true" multiValued="false"/>
 <field name="useremail" type="string" indexed="true" stored="true" multiValued="false"/>
 <field name="useralias" type="string" indexed="true" stored="true" multiValued="false"/>
+<field name="phone" type="string" indexed="true" stored="true" multiValued="false"/>
+<field name="userrole" type="string" indexed="true" stored="true" multiValued="false"/>
     
 <field name="background" type="string" indexed="false" stored="true" multiValued="false"/>
 <field name="title" type="terms_jsstem" indexed="true" stored="true" multiValued="false"/>

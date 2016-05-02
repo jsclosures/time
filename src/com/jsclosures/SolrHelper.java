@@ -970,6 +970,18 @@ public class SolrHelper
              hasData = true;
         }
         
+        String userstatus = queryArgs.getString("userstatus","");
+        
+        if( userstatus.length() > 0 )
+        {
+             if( hasData )
+                queryStr = queryStr + " AND userstatus:" + userstatus;
+             else
+                  queryStr = "userstatus:" + userstatus;
+             
+             hasData = true;
+        }
+        
         String location = queryArgs.getString("location");
         
         if( location.length() > 0 ){
@@ -978,6 +990,18 @@ public class SolrHelper
             String fq = "{!geofilt pt=" + location + " sfield=location d=" + ds + "}";
             
             solrArgs.setValue("fq",fq);
+        }
+        
+        String phone = queryArgs.getString("phone","");
+        
+        if( phone.length() > 0 )
+        {
+             if( hasData )
+                queryStr = queryStr + " AND phone:" + phone;
+             else
+                  queryStr = "phone:" + phone;
+             
+             hasData = true;
         }
            
      

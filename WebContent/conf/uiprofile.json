@@ -19,7 +19,7 @@
                     {"id": "auth","name": "authentication","autoStart": true,"buildWith": "buildAuthPage"},
                     {"id": "content","name": "content","autoStart": true,"buildWith": "buildContentPage"},
                     {"id": "settings","name": "settings","autoStart": true,"buildWith": "buildSettingsPage"}],
-	"showLogout" : true,
+	"showLogout" : false,
         "showCurrentUser" : false,
         "externalImports": [], 
         "mime": "json",    

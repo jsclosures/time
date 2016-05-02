@@ -26,6 +26,9 @@ public class UserService implements RestImplService {
         {"userkey","STRING"},
         {"useralias","STRING"},
         {"useremail","STRING"},
+    {"phone","STRING"},
+    {"userstatus","STRING"},
+    {"userrole","STRING"},
         {"contenttype","STRING"},
         {"contentowner","STRING"},
         {"last_modified","DATE"}};
@@ -124,6 +127,9 @@ public class UserService implements RestImplService {
         solrTmp.setValue("useralias",args.getString("useralias"));
         solrTmp.setValue("useralias",args.getString("useralias"));
         solrTmp.setValue("useremail",args.getString("useremail"));
+        solrTmp.setValue("userrole",args.getString("userrole"));
+        solrTmp.setValue("phone",args.getString("phone"));
+        solrTmp.setValue("userstatus",args.getString("userstatus","0"));
         solrTmp.setValue("contentowner",args.getString("contentowner","zen"));
         solrTmp.setValue("last_modified",SolrHelper.getTimestamp()); 
 
@@ -181,9 +187,12 @@ public class UserService implements RestImplService {
         solrTmp.setValue("username",args.getString("username"));  
         solrTmp.setValue("userkey",Helper.hashUserKey(args.getString("userkey")));    
         solrTmp.setValue("useralias",args.getString("useralias"));
-        solrTmp.setValue("useralias",args.getString("useralias"));
         solrTmp.setValue("useremail",args.getString("useremail"));
+        solrTmp.setValue("userrole",args.getString("userrole"));
         solrTmp.setValue("contentowner",args.getString("contentowner","zen"));
+        solrTmp.setValue("userstatus",args.getString("userstatus","0"));
+        solrTmp.setValue("phone",args.getString("phone"));
+        
         
         solrTmp.setValue("last_modified",SolrHelper.getTimestamp()); 
 
@@ -238,7 +247,7 @@ public class UserService implements RestImplService {
         
         
         DataBean solrTmp = new DataBean();
-        solrTmp.setValue("id",args.getValue("id"));  
+        solrTmp.setValue("username",args.getValue("username"));  
 
         resultList.add(solrTmp);
         
@@ -246,7 +255,7 @@ public class UserService implements RestImplService {
 
         DataBean solrAttributeResult = SolrHelper.removeDocumentsFromSolr(solrServer,resultList);
         
-        SolrHelper.removeDocumentsFromSolrByQuery(solrServer,"parentid:" + args.getString("id"));
+        SolrHelper.removeDocumentsFromSolrByQuery(solrServer,"username:" + args.getString("username"));
         //SolrHelper.commitToSolr(solrServer);
         SolrHelper.releaseServer(solrServer);
         

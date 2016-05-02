@@ -217,7 +217,7 @@ function internalBuildTrackerEditPage(mainContext, mainId) {
                     
                     for(var i = 0;i < formFields.length;i++){
                         var tField = formFields[i];
-                        var label = new dojox.mobile.ContentPane({id: mainForm + tField.name + "label",content: profileManager.getString(tField.label)});
+                        var label = new dojox.mobile.ContentPane({id: mainForm + tField.name + "label",style: "width: 100%;",content: profileManager.getString(tField.label)});
                         registeredWidgetList.push(label.id);
                         formContainer.addChild(label);
     

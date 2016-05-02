@@ -127,7 +127,7 @@ function internalBuildTrackerPage(mainContext, mainId) {
                     
                 }
                 getCurrentContext().CacheManager.getData({contenttype:"TRACKER",nocache: true,callback: doLater});
-                
+                getCurrentContext().purgeNextActions();
         }
 
         context.stopChild = function () {

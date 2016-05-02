@@ -71,7 +71,11 @@ public class AuthenticationService extends RestServiceServlet {
         } else if (mode.equalsIgnoreCase("POST")) {
             DataBean queryArgs = Helper.readAllJSONParameters(this, req);
             String contentType = queryArgs.getString("contenttype");
-            
+            writeLog(2,queryArgs.toString());
+            if( !queryArgs.isValid("contenttype") ){
+                queryArgs = Helper.readAllParameters(this, req);
+                contentType = queryArgs.getString("contenttype");
+            }
             writeLog(2, "auth doing post " + contentType);
 
             if (contentType.equalsIgnoreCase("AUTH")) {

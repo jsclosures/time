@@ -64,16 +64,6 @@
         <url-pattern>/authservice/*</url-pattern>
     </servlet-mapping>
     
-    
-    <servlet>
-        <servlet-name>com.jsclosures.FileServlet</servlet-name>
-        <servlet-class>com.jsclosures.FileServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>com.jsclosures.FileServlet</servlet-name>
-        <url-pattern>/fileservlet/*</url-pattern>
-    </servlet-mapping>
-    
     <session-config>
         <session-timeout>10000</session-timeout>
     </session-config>

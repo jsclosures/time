@@ -3,6 +3,8 @@ package com.jsclosures;
 import com.jsclosures.services.RestImplService;
 import com.jsclosures.services.SessionManager;
 
+import com.jsclosures.services.UserService;
+
 import java.util.ArrayList;
 
 import javax.servlet.ServletConfig;
@@ -32,7 +34,7 @@ public class MainService extends RestServiceServlet {
 
         result.setCollection("beanlist", dataList);
         result.setCollection("columnlist", columnList);
-        writeLog(2, "doing get data for mode " + mode);
+        writeLog(2, "main doing get data for mode " + mode);
         
         String contentType = req.getParameter("contenttype");
         if (contentType == null || contentType.length() == 0)
@@ -43,23 +45,64 @@ public class MainService extends RestServiceServlet {
         DataBean authArgs = new DataBean();
         authArgs.setValue("authkey",Helper.getCookie(req,cookieName));
         
+        if( !authArgs.isValid("authkey") ){
+            authArgs.setValue("authkey",Helper.getAuthenticationKey(req,cookieName));
+        }
+
         if( authArgs.isValid("authkey") ){
-            DataBean user = SessionManager.checkSession(this,authArgs);
-            String currentUserName = user.getString("username");
-            
-            if( user.isValid("id") ){
-               
+            DataBean session = SessionManager.checkSession(this,authArgs);
+             
+            if( session.isValid("id") && session.isValid("authname") ){
+                String currentUserName = session.getString("authname");
+                
+                UserService userService = new UserService();
+                DataBean searchArgs = new DataBean();
+                searchArgs.setValue("username",currentUserName);
+                searchArgs.setObject("request",req);
+                searchArgs.setObject("response",resp);
+                writeLog(1,"userQueryArgs: " + searchArgs.toString());
+                
+                DataBean checkResult = userService.getData(this,searchArgs);
+                writeLog(1,"check user info: " + checkResult);
+                
+                ArrayList<DataBean> userList = checkResult.getCollection("beanlist");
+                writeLog(1,"userList: " + userList);
+                DataBean user;
+                
+                if( userList != null || userList.size() > 0 ){
+                    user = userList.get(0);
+                    if( user.isValid("userrole") && user.getString("userrole").equalsIgnoreCase("system") && req.getParameter("username") != null ){
+                        searchArgs = new DataBean();
+                        searchArgs.setValue("username",req.getParameter("username"));
+                        searchArgs.setObject("request",req);
+                        searchArgs.setObject("response",resp);
+                        writeLog(1,"asuser userQueryArgs: " + searchArgs.toString());
+                        
+                        checkResult = userService.getData(this,searchArgs);
+                        writeLog(1,"asuser check user info: " + checkResult);
+                        
+                        userList = checkResult.getCollection("beanlist");
+                        writeLog(1,"asuser userList: " + userList);
+                 
+                        if( userList != null || userList.size() > 0 ){
+                            user = userList.get(0);
+                        }
+                    }
+                    
+                    currentUserName = user.getString("username");
+                }
+                else {
+                    user = new DataBean();
+                    user.setValue("username",currentUserName);
+                }
+                
                 if (mode.equalsIgnoreCase("GET")) {
-                    
-                    
                     DataBean queryArgs = Helper.readAllParameters(this, req);
                     Helper.readSortArguments(this, req, queryArgs);
                     Helper.readPagingArguments(this, req, queryArgs);
                     queryArgs.setValue("user",currentUserName);
                     queryArgs.setValue("username",currentUserName);
-                    if( !queryArgs.isValid("contentowner") ){
-                        queryArgs.setValue("contentowner",user.getString("contentowner","zen"));
-                    }
+                    queryArgs.setValue("contentowner",user.getString("contentowner","zen"));
                     queryArgs.setObject("request",req);
                     queryArgs.setObject("response",resp);
                     
@@ -75,7 +118,7 @@ public class MainService extends RestServiceServlet {
                         result.setValue("fmt",queryArgs.getValue("fmt"));
                     
                 } else if (mode.equalsIgnoreCase("POST")) {
-                    DataBean queryArgs = Helper.readAllJSONParameters(this, req);
+                    DataBean queryArgs = Helper.readAnyParameters(this, req);
                     writeLog(2,queryArgs.toString());
                     if( !queryArgs.isValid("contenttype") )
                         queryArgs = Helper.readAllParameters(this, req);
@@ -83,9 +126,7 @@ public class MainService extends RestServiceServlet {
                     contentType = queryArgs.getString("contenttype");
                     queryArgs.setValue("user",currentUserName);
                     queryArgs.setValue("username",currentUserName);
-                    if( !queryArgs.isValid("contentowner") ){
-                        queryArgs.setValue("contentowner",user.getString("contentowner","zen"));
-                    }
+                    queryArgs.setValue("contentowner",user.getString("contentowner","zen"));
                     queryArgs.setObject("request",req);
                     queryArgs.setObject("response",resp);
                     
@@ -104,9 +145,7 @@ public class MainService extends RestServiceServlet {
                     contentType = queryArgs.getString("contenttype");
                     queryArgs.setValue("user",currentUserName);
                     queryArgs.setValue("username",currentUserName);
-                    if( !queryArgs.isValid("contentowner") ){
-                        queryArgs.setValue("contentowner",user.getString("contentowner","zen"));
-                    }
+                    queryArgs.setValue("contentowner",user.getString("contentowner","zen"));
                     queryArgs.setObject("request",req);
                     queryArgs.setObject("response",resp);
                     try{
@@ -118,16 +157,12 @@ public class MainService extends RestServiceServlet {
                     }
 
                 } else if (mode.equalsIgnoreCase("DELETE")) {
-                    DataBean queryArgs = Helper.readAllParameters(this, req);
-                    if( !queryArgs.isValid("contenttype") )
-                        queryArgs = Helper.readAllJSONParameters(this, req);
+                    DataBean queryArgs = Helper.readAnyParameters(this, req);
                     
                     contentType = queryArgs.getString("contenttype");
                     queryArgs.setValue("user",currentUserName);
                     queryArgs.setValue("username",currentUserName);
-                    if( !queryArgs.isValid("contentowner") ){
-                        queryArgs.setValue("contentowner",user.getString("contentowner","zen"));
-                    }
+                    queryArgs.setValue("contentowner",user.getString("contentowner","zen"));
                     queryArgs.setObject("request",req);
                     queryArgs.setObject("response",resp);    
                     try{
@@ -144,11 +179,9 @@ public class MainService extends RestServiceServlet {
                     try{
                         RestImplService gs = loadServiceClass(mappingRec.getString(contentType));
                         DataBean queryArgs = Helper.readAllParameters(this, req);
-                        queryArgs.setValue("user",currentUserName);
-                        queryArgs.setValue("username",currentUserName);
-                        if( !queryArgs.isValid("contentowner") ){
-                            queryArgs.setValue("contentowner",user.getString("contentowner","zen"));
-                        }
+                        queryArgs.setValue("user","zen");
+                        queryArgs.setValue("username","zen");
+                        queryArgs.setValue("contentowner","zen");
                         queryArgs.setObject("request",req);
                         queryArgs.setObject("response",resp);
                         result = gs.getData(this, queryArgs);
@@ -162,9 +195,7 @@ public class MainService extends RestServiceServlet {
                         DataBean queryArgs = Helper.readAllParameters(this, req);
                         //queryArgs.setValue("user",currentUserName);
                         //queryArgs.setValue("username",currentUserName);
-                        if( !queryArgs.isValid("contentowner") ){
-                            queryArgs.setValue("contentowner",user.getString("contentowner","zen"));
-                        }
+                        
                         queryArgs.setObject("request",req);
                         queryArgs.setObject("response",resp);
                         result = gs.getData(this, queryArgs);

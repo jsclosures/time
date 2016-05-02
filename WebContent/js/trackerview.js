@@ -71,7 +71,7 @@ function internalBuildTrackerViewPage(mainContext, mainId) {
                         context.setTarget(target);
                     }
                 }
-                
+                getCurrentContext().purgeNextActions();
         }
 
         context.stopChild = function () {

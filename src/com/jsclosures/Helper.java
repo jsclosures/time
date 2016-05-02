@@ -316,6 +316,23 @@ public class Helper extends DataBean {
 
         return (result);
     }
+    
+    public static DataBean readAnyParameters(RestService context, HttpServletRequest req) {
+        DataBean result = readAllJSONParameters(context,req);
+
+        Enumeration pList = req.getParameterNames();
+        String tKey;
+
+        while (pList.hasMoreElements()) {
+            tKey = pList.nextElement().toString();
+
+            writeLog(2, "found key " + tKey + " v: " + req.getParameter(tKey));
+
+            result.setValue(tKey, req.getParameter(tKey));
+        }
+
+        return (result);
+    }
 
     public static String readPut(HttpServletRequest req) {
         StringBuffer result = new StringBuffer();
@@ -1321,7 +1338,7 @@ public class Helper extends DataBean {
 
             result = sb.toString();
         } catch (Exception e) {
-
+            System.out.println("hashing error: " + e.toString());
         }
 
         return (result);
@@ -1537,7 +1554,7 @@ public class Helper extends DataBean {
 
 
     public static void main(String[] args) {
-        DataBean test = new DataBean();
+        /*DataBean test = new DataBean();
         test.setValue("id", 1);
         test.setValue("name", "name");
 
@@ -1566,11 +1583,44 @@ public class Helper extends DataBean {
 
         c3test.addToCollection("children", c4test);
 
-        System.out.println(Helper.toJson(test));
+        System.out.println(Helper.toJson(test));*/
+        
+        System.out.println("key: " + hashUserKey("1234"));
 
         System.exit(0);
 
     }
+    
+    public static String getAuthenticationKey(HttpServletRequest request, String cookieName)
+        {
+                String result = null;
+            writeLog(1, "looking for header auth key: " + cookieName);
+                try
+                {
+                        Enumeration headerList = request.getHeaderNames();
+
+                        if (headerList != null)
+                        {
+                                while( headerList.hasMoreElements() )
+                                {
+                                        String tHeaderName = headerList.nextElement().toString();
+              
+                                        if (tHeaderName.equalsIgnoreCase(cookieName))
+                                        {
+                                                result = request.getHeader(tHeaderName);
+                                            writeLog(1, "found header auth key: " + cookieName + " value: " + result);
+                                                break;
+                                        }
+                                }
+                        }
+                }
+                catch (Exception e)
+                {
+                        writeLog(1, "get auth key error : " + e.toString());
+                }
+
+                return (result);
+        }
 
 }
 /*end DataStructure*/

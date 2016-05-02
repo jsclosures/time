@@ -47,7 +47,7 @@ public class SessionManager  {
         
         solrTmp.setValue("authname",args.getString("username").toLowerCase());  
         solrTmp.setValue("authkey",Helper.MessageDigestToHex(args.getString("username")+SolrHelper.getTimestamp()));  
-        solrTmp.setValue("contentowner",args.getString("contentowner","zen").toLowerCase());  
+        //solrTmp.setValue("contentowner",args.getString("contentowner","zen").toLowerCase());  
         solrTmp.setValue("last_modified",SolrHelper.getTimestamp()); 
 
         ArrayList<DataBean> resultList = new ArrayList<DataBean>();
@@ -151,6 +151,7 @@ public class SessionManager  {
             queryArgs.setValue("contenttype",UserService.CONTENTTYPE);
             queryArgs.setValue("username",args.getString("username").toLowerCase());
             queryArgs.setValue("userkey",Helper.hashUserKey(args.getString("userkey")));
+            queryArgs.setValue("userstatus",1);
         
             SolrHelper.readQueryArguments(context, queryArgs,solrArgs);
 

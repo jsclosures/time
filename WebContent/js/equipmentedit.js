@@ -72,6 +72,7 @@ function internalBuildEquipmentEditPage(mainContext, mainId) {
 		  var tObj = dojo.byId(mainForm);
 
         }
+        var localMediaStream = false;
         var started = false; 
         var currentPhoto = false;
         context.startChild = function () {
@@ -80,6 +81,8 @@ function internalBuildEquipmentEditPage(mainContext, mainId) {
                     buildMainPage({id: mainForm});
                     started = true;
                 }
+                
+                getCurrentContext().purgeNextActions();
         }
 
         context.stopChild = function () {
@@ -127,7 +130,8 @@ function internalBuildEquipmentEditPage(mainContext, mainId) {
                       },
                 
                       // successCallback
-                      function(localMediaStream) {
+                      function(lms) {
+                        localMediaStream = lms;
                          var video = dojo.byId(mainForm + "video");
                          if( video ){
                              video.src = window.URL.createObjectURL(localMediaStream);
@@ -310,6 +314,17 @@ function internalBuildEquipmentEditPage(mainContext, mainId) {
                          requestData.background = bg;
                      }
                      console.log(requestData);
+                    
+                     if( localMediaStream ){
+                         if( localMediaStream.getTracks ){
+                            localMediaStream.getTracks().forEach(function(track) { track.stop() });
+                            localMediaStream = false;
+                         }
+                         else {
+                             localMediaStream.stop();
+                             localMediaStream = false;
+                         }
+                     }
                      
                      var doLater = function(data){
                         anyWidgetById(mainForm + "title").set("value","");
@@ -368,7 +383,16 @@ function internalBuildEquipmentEditPage(mainContext, mainId) {
             
             function doCancelAction() {
                      getCurrentContext().setCurrentView("equipment");
-                     
+                     if( localMediaStream ){
+                         if( localMediaStream.getTracks ){
+                            localMediaStream.getTracks().forEach(function(track) { track.stop() });
+                            localMediaStream = false;
+                         }
+                         else {
+                             localMediaStream.stop();
+                             localMediaStream = false;
+                         }
+                     }
             }
             
             
